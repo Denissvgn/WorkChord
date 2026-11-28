@@ -483,7 +483,12 @@ export const surfacesRussian = {
         projectFallback: "Проект",
         markShippedFailed: "Не удалось отметить релиз выпущенным",
         shipConfirmTitle: "Выпустить {{name}}?",
-        shipConfirmBody: "Не решено связанных задач: {{unresolved}} из {{total}}. Релиз будет отмечен выпущенным сейчас, а в историю каждой связанной задачи добавится запись о релизе.",
+        shipConfirmBody: "Релиз будет отмечен выпущенным сейчас, а в историю каждой связанной задачи добавится запись о релизе.",
+        shipConfirmWarning_one: "{{count}} связанная задача ещё требует решения.",
+        shipConfirmWarning_few: "{{count}} связанные задачи ещё требуют решения.",
+        shipConfirmWarning_many: "{{count}} связанных задач ещё требуют решения.",
+        shipConfirmWarning_other: "{{count}} связанной задачи ещё требуют решения.",
+        viewUnresolvedTasks: "Посмотреть нерешённые задачи",
         taskCount: "Задач: {{count}}",
         taskNumber: "Задача №{{id}}",
         statuses: {

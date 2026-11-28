@@ -60,7 +60,7 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [ConfirmDialogProps](../entities/ConfirmDialogProps.md) | Interface | 10 | — | — |
-| [ConfirmDialogTone](../entities/ConfirmDialogTone.md) | Type alias | 8 | `'danger' \| 'warning'` | — |
+| [ConfirmDialogTone](../entities/ConfirmDialogTone.md) | Type alias | 8 | `'danger' \| 'warning' \| 'neutral'` | — |
 
 ## Functions
 

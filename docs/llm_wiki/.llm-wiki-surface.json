@@ -92246,6 +92246,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/ProjectReleaseDetailPage.test",
       "outgoing_internal_links": [
+        "modules/i18n.md",
         "modules/ProjectReleaseDetailPage.md",
         "modules/ProjectReleaseDetailPage.test.md",
         "modules/renderWithProviders.md"
@@ -123287,5 +123288,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:2425ad6fdfcd4fd7f8ea21e1df6efadd0a0dc257bf2064ab8d0130e50d5c10d8"
+  "source_hash": "sha256:dc921b90bff722ab080f0d006043c19cbda76dba3fa94e5eabe8d36915051a61"
 }

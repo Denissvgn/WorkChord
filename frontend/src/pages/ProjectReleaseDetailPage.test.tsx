@@ -1,8 +1,9 @@
-import { beforeEach, expect, it, vi } from 'vitest';
-import { screen, within } from '@testing-library/react';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { screen, waitFor, within } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 import { renderWithProviders } from '../test/renderWithProviders';
 import ProjectReleaseDetailPage from './ProjectReleaseDetailPage';
+import { changeAppLanguage } from '../i18n/i18n';
 
 const services = vi.hoisted(() => ({ project: { getById: vi.fn() }, release: { getById: vi.fn(), update: vi.fn() } }));
 vi.mock('../services/projectService', () => ({ projectService: services.project }));
@@ -14,6 +15,66 @@ beforeEach(() => {
     vi.resetAllMocks();
     services.project.getById.mockResolvedValue({ id: 1, name: 'Atlas' });
     services.release.getById.mockResolvedValue({ id: 2, project_id: 1, name: 'Launch', description: 'Release notes', status: 'planned', target_date: null, version: null, environment: null, shipped_at: null, updated_at: null, tasks: [] });
+});
+afterEach(async () => { await changeAppLanguage('en'); });
+
+const task = (id: number, status: string, displayed_state?: string) => ({ id, title: `Task ${id}`, status, displayed_state });
+const setTasks = (tasks: ReturnType<typeof task>[]) => {
+    services.release.getById.mockResolvedValue({ id: 2, project_id: 1, name: 'Launch', status: 'planned', tasks });
+};
+
+it.each([
+    ['closed', [task(1, 'closed'), task(2, 'closed')]],
+    ['resolved', [task(1, 'resolved')]],
+    ['canceled', [task(1, 'active', 'canceled')]],
+    ['superseded', [task(1, 'planned', 'superseded')]],
+    ['empty', []],
+])('uses a neutral shipping confirmation for %s tasks', async (_label, tasks) => {
+    setTasks(tasks);
+    const { user } = renderPage();
+    await user.click(await screen.findByRole('button', { name: 'Mark shipped' }));
+    const dialog = screen.getByRole('dialog', { name: 'Ship Launch?' });
+    expect(within(dialog).getByText('Shipping records the release as shipped now and adds a release entry to each linked task’s history.')).toBeVisible();
+    expect(within(dialog).queryByText(/needs? resolution/)).not.toBeInTheDocument();
+    expect(within(dialog).getByRole('button', { name: 'Mark shipped' })).toHaveClass('btn-primary');
+});
+
+it('shows only unresolved tasks and can confirm shipping', async () => {
+    const tasks = [task(1, 'closed', 'active'), task(2, 'postponed'), task(3, 'active', 'canceled'), task(4, 'closed')];
+    setTasks(tasks);
+    services.release.update.mockResolvedValue({ id: 2, project_id: 1, name: 'Launch', status: 'shipped', tasks });
+    const { user } = renderPage();
+    await user.click(await screen.findByRole('button', { name: 'Mark shipped' }));
+    const dialog = screen.getByRole('dialog', { name: 'Ship Launch?' });
+    expect(within(dialog).getByText('2 linked tasks still need resolution.')).toBeVisible();
+    expect(within(dialog).getByRole('button', { name: 'Mark shipped' })).toHaveClass('warning');
+    await user.click(within(dialog).getByText('View unresolved tasks'));
+    expect(within(dialog).getByText('Task 1 (Task #1)')).toBeVisible();
+    expect(within(dialog).getByText('Task 2 (Task #2)')).toBeVisible();
+    expect(within(dialog).queryByText(/Task 3/)).not.toBeInTheDocument();
+    await user.click(within(dialog).getByRole('button', { name: 'Mark shipped' }));
+    await waitFor(() => expect(services.release.update).toHaveBeenCalledWith(2, { status: 'shipped', shipped_at: expect.any(String) }));
+});
+
+it.each([
+    ['en', 1, '1 linked task still needs resolution.'],
+    ['en', 2, '2 linked tasks still need resolution.'],
+    ['ru', 1, '1 связанная задача ещё требует решения.'],
+    ['ru', 2, '2 связанные задачи ещё требуют решения.'],
+    ['ru', 5, '5 связанных задач ещё требуют решения.'],
+])('renders the %s warning for %i tasks', async (language, count, message) => {
+    await changeAppLanguage(language);
+    setTasks(Array.from({ length: count }, (_, index) => task(index + 1, 'active')));
+    const { user } = renderPage();
+    await user.click(await screen.findByRole('button', { name: language === 'ru' ? 'Отметить выпущенным' : 'Mark shipped' }));
+    expect(within(screen.getByRole('dialog')).getByText(message)).toBeVisible();
+});
+
+it('renders the neutral confirmation in Russian', async () => {
+    await changeAppLanguage('ru');
+    const { user } = renderPage();
+    await user.click(await screen.findByRole('button', { name: 'Отметить выпущенным' }));
+    expect(within(screen.getByRole('dialog')).getByText('Релиз будет отмечен выпущенным сейчас, а в историю каждой связанной задачи добавится запись о релизе.')).toBeVisible();
 });
 it('frames the release with a fixed purpose and description in the body', async () => {
     renderPage();

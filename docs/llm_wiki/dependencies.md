@@ -702,7 +702,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [models_identity](modules/models_identity.md) | 81 | 2 |
 | [task_service](modules/task_service.md) | 78 | 31 |
 | [apiError](modules/apiError.md) | 78 | 2 |
-| [i18n](modules/i18n.md) | 72 | 1 |
+| [i18n](modules/i18n.md) | 73 | 1 |
 | [app_main](modules/app_main.md) | 69 | 49 |
 | [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 67 | 9 |
 | [agent_service](modules/agent_service.md) | 62 | 20 |
@@ -763,8 +763,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [useAdminAccess](modules/useAdminAccess.md) | 21 | 2 |
 | [types_gantt](modules/types_gantt.md) | 21 | 2 |
 | [review_provenance](modules/review_provenance.md) | 20 | 22 |
+| [taskState](modules/taskState.md) | 20 | 1 |
 | [useDraftDismissal](modules/useDraftDismissal.md) | 19 | 0 |
-| [taskState](modules/taskState.md) | 19 | 1 |
 | [models_capacity](modules/models_capacity.md) | 18 | 2 |
 | [models_triage](modules/models_triage.md) | 18 | 7 |
 | [agent_team_setup](modules/agent_team_setup.md) | 18 | 1 |
@@ -1435,7 +1435,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [LandingPage](modules/LandingPage.md) | 1 | 3 |
 | [NativeConnectionPage](modules/NativeConnectionPage.md) | 1 | 6 |
 | [ProjectDetailPage](modules/ProjectDetailPage.md) | 1 | 24 |
-| [ProjectReleaseDetailPage](modules/ProjectReleaseDetailPage.md) | 1 | 14 |
+| [ProjectReleaseDetailPage](modules/ProjectReleaseDetailPage.md) | 1 | 15 |
 | [deliveryMetricsService](modules/deliveryMetricsService.md) | 1 | 3 |
 | [emailSettingsService](modules/emailSettingsService.md) | 1 | 2 |
 | [executionUsageService](modules/executionUsageService.md) | 1 | 3 |
@@ -1839,7 +1839,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanPage.test](modules/PlanPage.test.md) | 0 | 11 |
 | [PlanSharePage.test](modules/PlanSharePage.test.md) | 0 | 2 |
 | [ProjectDetailPage.test](modules/ProjectDetailPage.test.md) | 0 | 3 |
-| [ProjectReleaseDetailPage.test](modules/ProjectReleaseDetailPage.test.md) | 0 | 2 |
+| [ProjectReleaseDetailPage.test](modules/ProjectReleaseDetailPage.test.md) | 0 | 3 |
 | [ProjectsPage.test](modules/ProjectsPage.test.md) | 0 | 6 |
 | [SettingsPage.calendar.test](modules/SettingsPage.calendar.test.md) | 0 | 2 |
 | [SettingsPage.labels.test](modules/SettingsPage.labels.test.md) | 0 | 14 |

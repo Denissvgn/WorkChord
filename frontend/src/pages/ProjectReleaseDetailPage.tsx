@@ -21,6 +21,7 @@ import { projectService } from '../services/projectService';
 import { releaseService } from '../services/releaseService';
 import { getApiErrorMessage, getApiErrorStatus } from '../utils/apiError';
 import { formatDate, formatDateTime } from '../utils/formatDate';
+import { isEndedState } from '../utils/taskState';
 import type { Release, ReleaseStatus, ReleaseTaskSummary } from '../types/release';
 import { isDisplayedState, pillToneClassName, STATE_TONE, stateTextClassName, wcPillClass } from '../components/ui/tone';
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
@@ -211,19 +212,28 @@ const ProjectReleaseDetailPage = () => {
                     <Button
                         isLoading={markShippedMutation.isPending}
                         onClick={() => {
-                            // Shipping writes a release entry into every linked task's history,
-                            // so confirm with the unresolved count before committing it.
-                            const unresolved = release.tasks.filter(task => !['resolved', 'closed'].includes(task.status)).length;
+                            const unresolved = release.tasks.filter(task => {
+                                const state = task.displayed_state ?? task.status;
+                                return state !== 'resolved' && state !== 'closed' && !isEndedState(state);
+                            });
                             requestConfirmation({
                                 title: t('surfaces.releaseDetail.shipConfirmTitle', { name: release.name }),
-                                description: t('surfaces.releaseDetail.shipConfirmBody', {
-                                    unresolved,
-                                    total: release.tasks.length,
-                                }),
+                                description: <>
+                                    {unresolved.length > 0 && <>
+                                        <p>{t('surfaces.releaseDetail.shipConfirmWarning', { count: unresolved.length })}</p>
+                                        <details className="mt-2">
+                                            <summary className="cursor-pointer">{t('surfaces.releaseDetail.viewUnresolvedTasks')}</summary>
+                                            <ul className="mt-2 max-h-40 list-disc overflow-y-auto pl-5">
+                                                {unresolved.map(task => <li key={task.id}>{task.title} ({t('surfaces.releaseDetail.taskNumber', { id: task.id })})</li>)}
+                                            </ul>
+                                        </details>
+                                    </>}
+                                    <p className={unresolved.length > 0 ? 'mt-2' : undefined}>{t('surfaces.releaseDetail.shipConfirmBody')}</p>
+                                </>,
                                 confirmLabel: t('surfaces.releaseDetail.markShipped'),
                                 cancelLabel: t('actions.cancel'),
                                 closeLabel: t('actions.close'),
-                                tone: 'warning',
+                                tone: unresolved.length > 0 ? 'warning' : 'neutral',
                                 onConfirm: () => markShippedMutation.mutateAsync(),
                             });
                         }}

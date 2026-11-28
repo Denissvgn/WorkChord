@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { Button } from './Button';
 import { Modal } from './Modal';
 
-export type ConfirmDialogTone = 'danger' | 'warning';
+export type ConfirmDialogTone = 'danger' | 'warning' | 'neutral';
 
 export interface ConfirmDialogProps {
     open: boolean;
@@ -25,6 +25,7 @@ export interface ConfirmDialogProps {
 const toneTitleClassName: Record<ConfirmDialogTone, string> = {
     danger: 'text-feedback-danger-foreground',
     warning: 'text-feedback-warning-foreground',
+    neutral: 'text-content-primary',
 };
 
 /**
@@ -52,7 +53,7 @@ export const ConfirmDialog = ({
             open={open}
             title={(
                 <span className={clsx('flex items-center gap-2', toneTitleClassName[tone])}>
-                    <AlertTriangle aria-hidden="true" className="h-5 w-5 shrink-0" />
+                    {tone !== 'neutral' && <AlertTriangle aria-hidden="true" className="h-5 w-5 shrink-0" />}
                     <span>{title}</span>
                 </span>
             )}
@@ -70,7 +71,7 @@ export const ConfirmDialog = ({
                     </Button>
                     <Button
                         type="button"
-                        variant={tone}
+                        variant={tone === 'neutral' ? 'primary' : tone}
                         className={tone === 'warning'
                             ? 'border-feedback-warning bg-feedback-warning text-feedback-warning-emphasis hover:bg-feedback-warning/90'
                             : undefined}
