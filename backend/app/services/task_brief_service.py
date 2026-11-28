@@ -200,6 +200,11 @@ def brief_from_draft(draft, *, title=None, context=None) -> TaskBrief:
         acceptance_criteria=[BriefCriterion(text=item) for item in value("acceptance_criteria", []) or []])
 
 
+def _accountable_review_override(authority):
+    return bool(authority and authority.kind in {"human", "system"} and authority.operator
+                and authority.review_override and authority.reason)
+
+
 class TaskBriefService:
     def __init__(self, db):
         self.db = db
@@ -407,7 +412,7 @@ class TaskBriefService:
                 raise AuthorityError("verified_publisher_review_required", "Use an assigned agent verifier for formal review. Work requires attributable agent execution or an authenticated manual executor and current artifact evidence.")
         authority = self.db.info.get("authority")
         principal = getattr(authority, "principal_id", None)
-        self_review_override = override = bool(authority and authority.operator and authority.review_override and authority.reason)
+        self_review_override = override = _accountable_review_override(authority)
         command = current_command(self.db)
         if command is not None and task.id in command.owner_acceptance_tasks:
             # On an owner override the header waives only self-review independence;
@@ -445,14 +450,15 @@ class TaskBriefService:
                 if item.get("criterion_revision") != criterion["revision"] or item.get("state") != "completed" or not item.get("evidence", "").strip():
                     raise ValueError("Every current criterion requires completed progress and evidence")
 
-    async def record_review(self, task, *, verdict, reason, evidence=""):
+    async def record_review(self, task, *, reviewed_task_version, verdict, reason, evidence=""):
         from app.commands import current_command
         from app.services.identity_service import acting_principal_id
         principal_id = await acting_principal_id(self.db)
         command = current_command(self.db)
-        overridden = command is not None and any(key[0] == task.id for key in command.owner_acceptance_overrides)
+        overridden = (_accountable_review_override(self.db.info.get("authority")) or
+                      command is not None and any(key[0] == task.id for key in command.owner_acceptance_overrides))
         record = TaskReviewRecord(task_id=task.id, original_task_id=task.id, task_version=task.version, brief_revision=task.brief_revision,
-            artifact_revision=task.artifact_revision, principal_id=principal_id,
+            artifact_revision=task.artifact_revision, principal_id=principal_id, reviewed_task_version=reviewed_task_version,
             verdict=verdict, kind="owner_override" if overridden and verdict == "accept" else "review", reason=reason, evidence=evidence)
         self.db.add(record)
         return record
@@ -510,6 +516,4 @@ class TaskBriefService:
         await self.require_review(task, accepting=data.verdict == "accept")
         task, _, _ = await self.tasks.change_status(task.id, "closed" if data.verdict == "accept" else "active",
             reason=data.reason, expected_version=task.version, review_evidence=data.evidence, review_rework=data.verdict == "reject", commit=False)
-        if data.verdict == "reject":
-            await self.record_review(task, verdict="reject", reason=data.reason, evidence=data.evidence)
         return task

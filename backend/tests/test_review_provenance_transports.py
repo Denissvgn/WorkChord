@@ -143,6 +143,9 @@ async def test_strict_recovery_and_provider_review(db_session, db_session_factor
                       "observed_model": verifier.default_model_binding_key, "evidence": {"defect": "changed PR head"},
                       "verdict": "reject", "reason": "Rebuild the changed candidate", "rework_actor_id": worker.id}
             await call("agent_submit_review_verdict", "/api/agent/me/reviews/verdict", reviewer_key,
+                payload={**reject, "reviewed_candidate_digest": "0" * 64}, receipt="wrong-review-candidate",
+                error="verification_candidate_stale")
+            await call("agent_submit_review_verdict", "/api/agent/me/reviews/verdict", reviewer_key,
                 payload={**reject, "observed_model": member.default_model_binding_key}, receipt="wrong-reviewer-model",
                 error="verification_publisher_unverifiable")
             result = await call("agent_submit_review_verdict", "/api/agent/me/reviews/verdict", reviewer_key,

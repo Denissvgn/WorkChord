@@ -1964,7 +1964,7 @@ class TaskService:
         commit: bool = True,
         reserve_version: bool = True,
         manual_execution: bool = False,
-        review_evidence: str = "",
+        review_evidence: str | None = None,
         review_rework: bool = False,
     ) -> tuple[Optional[Task], list[dict], bool]:
         """Delegate status transitions to TaskStatusService."""

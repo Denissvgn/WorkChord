@@ -106,7 +106,7 @@ class ReleaseService:
     async def _attach_work_metrics(self, release, tasks=None):
         from app.services.work_metrics import aggregate_metrics
         selected, tasks = await self.metric_task_ids(release, tasks)
-        values = await aggregate_metrics(self.db, project_id=release.project_id, task_ids=selected)
+        values = await aggregate_metrics(self.db, project_id=release.project_id, task_ids=selected, release_scope=True)
         for key, value in values.items():
             setattr(release, key, value)
         release.target_overflow_tasks = sum(1 for task in tasks if task.id in selected and not task.is_summary and not task.is_deferred and task.status != "postponed" and task.canceled_at is None and task.end_date and release.target_date and task.end_date > release.target_date)

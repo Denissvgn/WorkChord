@@ -72,7 +72,7 @@ Backlog project changes require edit permission in both scopes. Project locks ar
 | `get_tasks_as_text` | *(async)* `(iteration_id: int) -> str` | — | Delegate editable task text serialization to TaskImportService. |
 | `bulk_update_tasks_from_text` | *(async)* `(iteration_id: int, text: str, destination: TaskImportDestination = 'tasks', *, expected_revision: int \| None = None) -> tuple[list[Task], list[TriageItem]]` | `@atomic_command` | Delegate bulk text edits to TaskImportService. |
 | `status_service` | `()` | `@property` | Return the focused status collaborator behind this facade. |
-| `change_status` | *(async)* `(task_id: int, new_status: TaskStatus \| str, reason: Optional[str] = None, actor_type: str = 'user', actor_id: Optional[int] = None, trace_id: Optional[str] = None, span_id: Optional[str] = None, correlation_id: Optional[str] = None, idempotency_key: Optional[str] = None, expected_version: Optional[int] = None, commit: bool = True, reserve_version: bool = True, manual_execution: bool = False, review_evidence: str = '', review_rework: bool = False) -> tuple[Optional[Task], list[dict], bool]` | `@atomic_command` | Delegate status transitions to TaskStatusService. |
+| `change_status` | *(async)* `(task_id: int, new_status: TaskStatus \| str, reason: Optional[str] = None, actor_type: str = 'user', actor_id: Optional[int] = None, trace_id: Optional[str] = None, span_id: Optional[str] = None, correlation_id: Optional[str] = None, idempotency_key: Optional[str] = None, expected_version: Optional[int] = None, commit: bool = True, reserve_version: bool = True, manual_execution: bool = False, review_evidence: str \| None = None, review_rework: bool = False) -> tuple[Optional[Task], list[dict], bool]` | `@atomic_command` | Delegate status transitions to TaskStatusService. |
 | `_update_parent_status` | *(async)* `(parent_id: int) -> None` | — | Compatibility seam for parent reconciliation. |
 | `_cascade_update_dependents` | *(async)* `(source_task: Task, original_end_date: date, reason: str) -> list[dict]` | — | Compatibility seam for dependent date cascade. |
 | `get_status_history` | *(async)* `(task_id: int) -> list[Any]` | — | Delegate task status history reads. |
@@ -148,4 +148,4 @@ flowchart LR
 | `_import_task_record` | type_reference | [export](../modules/export.md) | — |
 | `_process_import` | call | [export](../modules/export.md) | 1 |
 
-> References: showing 12 of 176 logical references; 164 omitted by the 12-row generated summary limit.
+> References: showing 12 of 175 logical references; 163 omitted by the 12-row generated summary limit.

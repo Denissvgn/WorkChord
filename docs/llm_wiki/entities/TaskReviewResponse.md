@@ -21,11 +21,12 @@ _Auto-generated from `TaskReviewResponse` in `backend/app/schemas/task_brief.py`
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `id` | `int` | `id` | Yes | No | — | — | — | — |
 | `task_version` | `int` | `task_version` | Yes | No | — | — | — | — |
+| `reviewed_task_version` | `int \| None` | `reviewed_task_version` | No | Yes | `None` | — | — | — |
 | `brief_revision` | `int` | `brief_revision` | Yes | No | — | — | — | — |
 | `artifact_revision` | `int` | `artifact_revision` | Yes | No | — | — | — | — |
 | `principal_id` | `int \| None` | `principal_id` | Yes | Yes | — | — | — | — |
 | `verdict` | `str` | `verdict` | Yes | No | — | — | — | — |
-| `kind` | `Literal['review', 'owner_override']` | `kind` | No | No | `'review'` | — | — | owner_override marks an owner's acceptance that set aside publisher independence; it is not an independent review. |
+| `kind` | `Literal['review', 'owner_override']` | `kind` | No | No | `'review'` | — | — | owner_override marks acceptance under an explicit owner or operator override. |
 | `reason` | `str` | `reason` | Yes | No | — | — | — | — |
 | `evidence` | `str` | `evidence` | Yes | No | — | — | — | — |
 | `created_at` | `datetime` | `created_at` | Yes | No | — | — | — | — |
@@ -58,7 +59,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task_brief](../modules/schemas_task_brief.md) | 0 | `artifact_revision`, `brief_revision`, `created_at`, `evidence`, `id`, `kind`, `principal_id`, `reason`, `task_version`, `verdict` |
+| [schemas_task_brief](../modules/schemas_task_brief.md) | 0 | `artifact_revision`, `brief_revision`, `created_at`, `evidence`, `id`, `kind`, `principal_id`, `reason`, `reviewed_task_version`, `task_version`, `verdict` |
 
 ### Structure
 

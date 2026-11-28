@@ -1,11 +1,11 @@
-"""Cross-dialect text matching rules for the supported SQLite/PostgreSQL window."""
+"""Cross-dialect SQL expressions for the supported SQLite/PostgreSQL window."""
 
 from __future__ import annotations
 
 import unicodedata
 from typing import Any
 
-from sqlalchemy import func
+from sqlalchemy import JSON, cast, func
 
 
 def normalize_text(value: str) -> str:
@@ -43,3 +43,13 @@ def portable_case_insensitive_equal(column: Any, value: str) -> Any:
     if normalized.isascii():
         return func.lower(column) == normalized.lower()
     return column == normalized
+
+
+def json_text_field(db, column, *path, integer=False):
+    """Task event payloads are historical text on both supported databases."""
+    if db.get_bind().dialect.name == "sqlite":
+        return func.json_extract(column, "$." + ".".join(path))
+    value = cast(column, JSON)
+    for key in path:
+        value = value[key]
+    return value.as_integer() if integer else value.as_string()

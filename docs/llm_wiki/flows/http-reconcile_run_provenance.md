@@ -2,7 +2,7 @@
 
 **Entry point:** `reconcile_run_provenance` (`http`)
 **Source:** [agent_catalog](../modules/agent_catalog.md)
-**Modules touched:** [agent_catalog](../modules/agent_catalog.md), [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_service](../modules/agent_service.md), and 19 more
+**Modules touched:** [agent_catalog](../modules/agent_catalog.md), [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_service](../modules/agent_service.md), and 20 more
 
 **Complete modules touched:**
 
@@ -24,6 +24,7 @@
 - [review_provenance](../modules/review_provenance.md)
 - [routers_agent_planning](../modules/routers_agent_planning.md)
 - [schemas_agent_planning](../modules/schemas_agent_planning.md)
+- [sql_semantics](../modules/sql_semantics.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_reactivation_service](../modules/task_reactivation_service.md)
 - [task_service](../modules/task_service.md)
@@ -115,7 +116,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/execution_reconciliation.py:reconcile_execution_request` | 2 | - | unresolved | 2 |
 | `backend/app/services/execution_reconciliation.py:reconcile_execution` | 16 | [backend/app/authority.py](../modules/authority.md) | internal | 2 |
 | `backend/app/services/execution_reconciliation.py:reconcile_execution` | 16 | - | external | 9 |
-> Omission summary shows 8 of 86 groups; 78 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 88 groups; 80 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -208,16 +209,16 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | reconcile_run_provenance | reconcile_execution_request | 121 | `reconcile_execution_request(db, actor, run_id, apply=apply, expected_evidence_digest=expected_evidence_digest, archived_acknowledgement=archived_acknowledgement, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
-| reconcile_execution_request | require_operator | 467 | `require_operator(db)` |
+| reconcile_execution_request | require_operator | 458 | `require_operator(db)` |
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 92 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 94 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| reconcile_execution_request | is_admin_key_principal | 470 | `is_admin_key_principal(actor)` |
-| reconcile_execution_request | actor_has_scope | 474 | `actor_has_scope(actor, 'admin')` |
+| reconcile_execution_request | is_admin_key_principal | 461 | `is_admin_key_principal(actor)` |
+| reconcile_execution_request | actor_has_scope | 465 | `actor_has_scope(actor, 'admin')` |
 | actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
 | actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
-| reconcile_execution_request | AuthorityError | 476 | `AuthorityError('operator_required', 'The credential must identify the authenticated workspace operator.')` |
-| reconcile_execution_request | any (backend/app/services/exec…concile_execution_request) | 480 | `any(...)` |
+| reconcile_execution_request | AuthorityError | 467 | `AuthorityError('operator_required', 'The credential must identify the authenticated workspace operator.')` |
+| reconcile_execution_request | any (backend/app/services/exec…concile_execution_request) | 471 | `any(...)` |
 
 ### Boundary effects
 
@@ -230,7 +231,7 @@ flowchart LR
 | unresolved_call | `require_operator` | `db.info.get` | 92 |
 | external_call | `actor_scopes` | `json.loads` | 87 |
 | external_call | `actor_scopes` | `isinstance` | 90 |
-| external_call | `reconcile_execution_request` | `any` | 480 |
+| external_call | `reconcile_execution_request` | `any` | 471 |
 | step_limit | `reconcile_run_provenance` | `first 12 steps` | 0 |
 | truncated_flow | `reconcile_run_provenance` | `depth limit` | 0 |
 

@@ -16,6 +16,7 @@ from app.models.delivery_observation import DeliveryObservation
 from app.models.identity import Principal
 from app.models.release import Release, release_tasks
 from app.models.task import Task, TaskDependency
+from app.models.task_brief import TaskReviewRecord
 from app.models.task_postponement import TaskPostponement, TaskReactivationRequirement
 from app.models.task_replacement import TaskReplacement
 from app.schemas.task_replacement import TaskReplacementCreate, TaskSupersessionCreate
@@ -47,7 +48,13 @@ async def _accept(db, task):
     db.add(owner)
     await db.flush()
     task.status, task.accepted_at, task.accepted_by_principal_id = "closed", utc_now(), owner.id
+    reviewed_version = task.version
+    task.version += 1
     task.accepted_version = task.version
+    db.add(TaskReviewRecord(task_id=task.id, original_task_id=task.id, principal_id=owner.id,
+                            task_version=task.version, reviewed_task_version=reviewed_version,
+                            brief_revision=task.brief_revision, artifact_revision=task.artifact_revision,
+                            verdict="accept", reason="Checked the importer", evidence="Delivery verified"))
 
 
 async def _postponed(db, project_id, iteration_id, target_id, *, reactivated=False):

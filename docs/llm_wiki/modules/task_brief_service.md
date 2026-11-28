@@ -55,7 +55,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (28) |
+| Inbound | `backend` (29) |
 | Outbound | `backend` (15) |
 
 ### External packages
@@ -64,13 +64,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 39 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskBriefService](../entities/TaskBriefService.md) | 203 | — | — |
+| [TaskBriefService](../entities/TaskBriefService.md) | 208 | — | — |
 
 ## Functions
 
@@ -86,3 +86,4 @@ flowchart LR
 | `clear_acceptance` | `(task: Task) -> None` | — | Invalidate the current projection while immutable verdict history remains. |
 | `clear_execution_evidence` | `(task: Task) -> None` | — | A changed execution context needs fresh progress; history remains immutable. |
 | `brief_from_draft` | `(draft, *, title = None, context = None) -> TaskBrief` | — | Project old draft/template fields into the canonical input contract. |
+| `_accountable_review_override` | `(authority)` | — | — |

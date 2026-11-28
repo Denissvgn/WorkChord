@@ -484,7 +484,7 @@ def authorize_domain_writes(session, _flush_context, _instances):
                     action = "manage"
             if history.has_changes() and obj.status == "closed" and not rollup:
                 action = "review"
-                if authority.kind == "system" and obj.accepted_at is not None and (not authority.review_override or not authority.reason):
+                if authority.kind == "system" and (not authority.review_override or not authority.reason):
                     raise AuthorityError("accountable_review_required", "System acceptance requires an explicit operator override and reason.")
                 if authority.kind == "agent" and authority.actor_role != "verifier":
                     raise AuthorityError("independent_review_required", "Execution cannot accept its own work.")

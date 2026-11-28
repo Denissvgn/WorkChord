@@ -7,7 +7,7 @@
 
 ## Description
 
-One recorded review. `owner_override` is an owner's acceptance that set aside publisher independence.
+One recorded review. `owner_override` marks an explicit owner or operator override.
 
 ## Attributes
 
@@ -15,6 +15,7 @@ One recorded review. `owner_override` is an owner's acceptance that set aside pu
 |------|------|----------|---------|-------------|
 | `id` | `number` | Yes | — | — |
 | `task_version` | `number` | Yes | — | — |
+| `reviewed_task_version` | `number \| null` | No | — | — |
 | `brief_revision` | `number` | Yes | — | — |
 | `artifact_revision` | `number` | Yes | — | — |
 | `principal_id` | `number \| null` | Yes | — | — |
@@ -50,7 +51,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `artifact_revision`, `brief_revision`, `created_at`, `evidence`, `id`, `kind`, `principal_id`, `reason`, `task_version`, `verdict` |
+| [types_task](../modules/types_task.md) | 0 | `artifact_revision`, `brief_revision`, `created_at`, `evidence`, `id`, `kind`, `principal_id`, `reason`, `reviewed_task_version`, `task_version`, `verdict` |
 
 ### References
 

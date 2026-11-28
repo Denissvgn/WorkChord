@@ -7346,7 +7346,7 @@
           },
           "kind": {
             "default": "review",
-            "description": "owner_override marks an owner's acceptance that set aside publisher independence; it is not an independent review.",
+            "description": "owner_override marks acceptance under an explicit owner or operator override.",
             "enum": [
               "review",
               "owner_override"
@@ -7368,6 +7368,17 @@
           "reason": {
             "title": "Reason",
             "type": "string"
+          },
+          "reviewed_task_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewed Task Version"
           },
           "task_version": {
             "title": "Task Version",

@@ -25,11 +25,11 @@
       "infrastructure": 13,
       "load-order": 1,
       "log": 1,
-      "modules": 1240,
+      "modules": 1242,
       "workflows": 254
     },
     "dependency_architecture": 2,
-    "total": 4122
+    "total": 4124
   },
   "dependency_pages": {
     "count": 2,
@@ -2553,13 +2553,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 332,
+              "line": 337,
               "step": "TaskBriefService.routing_check",
               "target": "self.tasks.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 334,
+              "line": 339,
               "step": "TaskBriefService.routing_check",
               "target": "LookupError"
             },
@@ -3236,13 +3236,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 313,
+              "line": 318,
               "step": "TaskBriefService.conversion",
               "target": "self.tasks.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 315,
+              "line": 320,
               "step": "TaskBriefService.conversion",
               "target": "ValueError"
             },
@@ -3335,13 +3335,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 344,
+              "line": 349,
               "step": "TaskBriefService.routing_conversion",
               "target": "self.tasks.get_by_id"
             },
             {
               "kind": "external_call",
-              "line": 346,
+              "line": 351,
               "step": "TaskBriefService.routing_conversion",
               "target": "LookupError"
             },
@@ -6852,7 +6852,7 @@
             "backend/app/services/task_display_state.py",
             "backend/app/services/task_postponement_service.py"
           ],
-          "step_count": 294,
+          "step_count": 295,
           "truncated": false
         }
       },
@@ -9272,9 +9272,10 @@
             "backend/app/services/work_metrics.py",
             "backend/app/utils/time.py",
             "backend/app/services/task_display_state.py",
+            "backend/app/sql_semantics.py",
             "backend/app/commands.py"
           ],
-          "step_count": 433,
+          "step_count": 461,
           "truncated": false
         }
       },
@@ -14934,7 +14935,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/retained_planning_output.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/github_links.py",
             "backend/app/services/planning_window_reconciliation.py",
             "backend/app/utils/time.py",
@@ -14947,7 +14948,7 @@
             "backend/app/refusal_next_steps.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 903,
+          "step_count": 904,
           "truncated": true
         }
       },
@@ -19554,10 +19555,11 @@
             "backend/app/utils/time.py",
             "backend/app/authority.py",
             "backend/app/services/task_display_state.py",
+            "backend/app/sql_semantics.py",
             "backend/app/commands.py",
             "backend/app/config.py"
           ],
-          "step_count": 347,
+          "step_count": 375,
           "truncated": false
         }
       },
@@ -20434,7 +20436,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 427,
+              "line": 434,
               "step": "postpone_task",
               "target": "TaskPostponementService(db).postpone"
             }
@@ -21094,7 +21096,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 434,
+              "line": 441,
               "step": "reactivate_task",
               "target": "TaskPostponementService(db).reactivate"
             }
@@ -21508,7 +21510,7 @@
             },
             {
               "kind": "external_call",
-              "line": 480,
+              "line": 471,
               "step": "reconcile_execution_request",
               "target": "any"
             },
@@ -21549,6 +21551,7 @@
             "backend/app/schemas/agent_team_setup.py",
             "backend/app/autonomy/canonical.py",
             "backend/app/services/agent_model_catalog_service.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/time.py",
             "backend/app/services/review_provenance.py",
             "backend/app/models/agent.py",
@@ -21673,7 +21676,7 @@
             "backend/app/services/review_provenance.py",
             "backend/app/services/agent_routing_service.py",
             "backend/app/services/agent_routing_policy.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/time.py",
             "backend/app/services/agent_team_setup_service.py",
             "backend/app/models/agent.py",
@@ -22148,7 +22151,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 445,
+              "line": 452,
               "step": "record_owner_decision",
               "target": "ReactivationService(db).record_owner_decision"
             }
@@ -22471,7 +22474,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 391,
+              "line": 398,
               "step": "record_task_replacement",
               "target": "TaskReplacementService(db).record"
             }
@@ -22537,7 +22540,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 406,
+              "line": 413,
               "step": "record_task_supersession",
               "target": "TaskReplacementService(db).supersede"
             }
@@ -23572,7 +23575,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 341,
+              "line": 348,
               "step": "restore_backlog",
               "target": "BacklogSnapshotService(db).restore"
             }
@@ -25752,7 +25755,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/retained_planning_output.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/github_links.py",
             "backend/app/services/agent_service.py",
             "backend/app/services/planning_window_reconciliation.py",
@@ -25768,7 +25771,7 @@
             "backend/app/refusal_next_steps.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 1239,
+          "step_count": 1240,
           "truncated": true
         }
       },
@@ -25789,55 +25792,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 315,
+              "line": 322,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 315,
+              "line": 322,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 315,
+              "line": 322,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 316,
+              "line": 323,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 324,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 324,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 324,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 324,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 324,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -26695,55 +26698,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 315,
+              "line": 322,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 315,
+              "line": 322,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 315,
+              "line": 322,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 316,
+              "line": 323,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 324,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 324,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 324,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 324,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 324,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -33572,7 +33575,7 @@
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/review_provenance.py",
             "backend/app/services/retained_planning_output.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/github_links.py",
             "backend/app/services/planning_window_reconciliation.py",
             "backend/app/services/agent_team_setup_service.py",
@@ -34217,7 +34220,7 @@
             "backend/app/services/work_metrics.py",
             "backend/app/services/review_provenance.py",
             "backend/app/services/retained_planning_output.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/github_links.py"
           ],
           "step_count": 652,
@@ -34314,7 +34317,7 @@
             "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/retained_planning_output.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/github_links.py"
           ],
           "step_count": 741,
@@ -34409,7 +34412,7 @@
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/review_provenance.py",
             "backend/app/services/retained_planning_output.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/github_links.py",
             "backend/app/services/planning_window_reconciliation.py",
             "backend/app/services/agent_team_setup_service.py",
@@ -34600,7 +34603,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/retained_planning_output.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/github_links.py",
             "backend/app/services/planning_window_reconciliation.py",
             "backend/app/services/agent_team_setup_service.py",
@@ -34611,7 +34614,7 @@
             "backend/app/refusal_next_steps.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 1067,
+          "step_count": 1068,
           "truncated": true
         }
       },
@@ -36650,7 +36653,7 @@
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/review_provenance.py",
             "backend/app/services/retained_planning_output.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/github_links.py",
             "backend/app/services/planning_window_reconciliation.py",
             "backend/app/services/agent_team_setup_service.py",
@@ -38604,7 +38607,7 @@
             "backend/app/services/work_metrics.py",
             "backend/app/services/review_provenance.py",
             "backend/app/services/retained_planning_output.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/github_links.py"
           ],
           "step_count": 597,
@@ -40358,7 +40361,7 @@
             "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/retained_planning_output.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/github_links.py"
           ],
           "step_count": 686,
@@ -40566,7 +40569,7 @@
             "backend/app/services/execution_planning_window.py",
             "backend/app/services/review_provenance.py",
             "backend/app/services/retained_planning_output.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/github_links.py",
             "backend/app/services/planning_window_reconciliation.py",
             "backend/app/services/agent_team_setup_service.py",
@@ -41076,9 +41079,10 @@
             "backend/app/services/release_service.py",
             "backend/app/services/work_metrics.py",
             "backend/app/query_limits.py",
-            "backend/app/services/task_display_state.py"
+            "backend/app/services/task_display_state.py",
+            "backend/app/sql_semantics.py"
           ],
-          "step_count": 549,
+          "step_count": 571,
           "truncated": true
         }
       },
@@ -43411,6 +43415,7 @@
             "backend/app/schemas/calendar.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/task_display_state.py",
+            "backend/app/sql_semantics.py",
             "backend/app/services/team_service.py",
             "backend/app/query_limits.py",
             "backend/app/schemas/team.py",
@@ -43418,7 +43423,7 @@
             "backend/app/services/capacity_adjustments.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 745,
+          "step_count": 773,
           "truncated": true
         }
       },
@@ -43767,11 +43772,12 @@
             "backend/app/services/project_service.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/task_display_state.py",
+            "backend/app/sql_semantics.py",
             "backend/app/query_limits.py",
             "backend/app/schemas/project.py",
             "backend/app/services/request_source_service.py"
           ],
-          "step_count": 669,
+          "step_count": 691,
           "truncated": true
         }
       },
@@ -43859,9 +43865,10 @@
             "backend/app/services/release_service.py",
             "backend/app/services/work_metrics.py",
             "backend/app/query_limits.py",
-            "backend/app/services/task_display_state.py"
+            "backend/app/services/task_display_state.py",
+            "backend/app/sql_semantics.py"
           ],
-          "step_count": 605,
+          "step_count": 627,
           "truncated": true
         }
       },
@@ -45106,9 +45113,10 @@
             "backend/app/services/release_service.py",
             "backend/app/query_limits.py",
             "backend/app/services/work_metrics.py",
-            "backend/app/services/task_display_state.py"
+            "backend/app/services/task_display_state.py",
+            "backend/app/sql_semantics.py"
           ],
-          "step_count": 621,
+          "step_count": 643,
           "truncated": true
         }
       },
@@ -50008,7 +50016,7 @@
             "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/work_metrics.py",
             "backend/app/services/retained_planning_output.py",
-            "backend/app/services/execution_reconciliation.py",
+            "backend/app/sql_semantics.py",
             "backend/app/utils/github_links.py",
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
@@ -54472,6 +54480,7 @@
         "modules/20261127_0031_routing_qualification_keys.md",
         "modules/20261127_0032_routing_calibration_contracts.md",
         "modules/20261127_0033_project_routing_conflict_mode.md",
+        "modules/20261128_0034_reviewed_task_version.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -55483,6 +55492,7 @@
         "modules/test_readiness_detail.md",
         "modules/test_refusal_next_steps.md",
         "modules/test_rehearsal_ownership.md",
+        "modules/test_release_review_verdicts.md",
         "modules/test_replacement_carried_provenance.md",
         "modules/test_review_provenance.md",
         "modules/test_review_provenance_transports.md",
@@ -66367,11 +66377,14 @@
         "modules/models___init__.md",
         "modules/models_task_brief.md",
         "modules/routers_task_domain.md",
+        "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
         "modules/task_recovery_service.md",
         "modules/test_acceptance_attribution.md",
         "modules/test_owner_override_acceptance.md",
-        "modules/test_task_domain.md"
+        "modules/test_release_review_verdicts.md",
+        "modules/test_task_domain.md",
+        "modules/test_task_supersession.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/task_brief.py",
@@ -69307,8 +69320,8 @@
         "modules/release_service.md",
         "modules/routers_task_domain.md",
         "modules/test_postponed_out_of_scheduling.md",
-        "modules/test_task_replacement.md",
-        "modules/test_task_supersession.md"
+        "modules/test_release_review_verdicts.md",
+        "modules/test_task_replacement.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/release_service.py",
@@ -77219,6 +77232,7 @@
         "modules/task_brief_service.md",
         "modules/test_acceptance_attribution.md",
         "modules/test_delivery_metrics.md",
+        "modules/test_planning_only_edit_fence.md",
         "modules/test_task_domain.md",
         "modules/test_task_domain_integrity.md",
         "modules/test_task_postponement.md",
@@ -83504,6 +83518,16 @@
       "role": "semantic",
       "source_path": "backend/app/migrations/versions/20261127_0033_project_routing_conflict_mode.py",
       "title": "20261127_0033_project_routing_conflict_mode Module"
+    },
+    {
+      "canonical_path": "modules/20261128_0034_reviewed_task_version.md",
+      "id": "20261128_0034_reviewed_task_version",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261128_0034_reviewed_task_version",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261128_0034_reviewed_task_version.py",
+      "title": "20261128_0034_reviewed_task_version Module"
     },
     {
       "canonical_path": "modules/acceptance_artifacts.md",
@@ -96101,9 +96125,11 @@
       "mcp_uri": "llm-wiki://modules/sql_semantics",
       "outgoing_internal_links": [
         "modules/discussion_service.md",
+        "modules/execution_reconciliation.md",
         "modules/label_service.md",
         "modules/project_service.md",
         "modules/request_source_service.md",
+        "modules/services_work_metrics.md",
         "modules/sql_semantics.md",
         "modules/task_detail_service.md",
         "modules/team_service.md",
@@ -96497,18 +96523,7 @@
       "mcp_uri": "llm-wiki://modules/task_context_revision_service",
       "outgoing_internal_links": [
         "entities/TaskContextVersionConflictError.md",
-        "modules/commands.md",
-        "modules/external_link_service.md",
-        "modules/github_status_service.md",
-        "modules/github_webhook_service.md",
-        "modules/mcp_agent_tools.md",
-        "modules/models_agent.md",
-        "modules/models_task.md",
-        "modules/request_source_service.md",
-        "modules/snapshot_service.md",
-        "modules/task_context_revision_service.md",
-        "modules/task_service.md",
-        "modules/test_delivery_merge_prerequisites.md"
+        "modules/task_context_revision_service.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/task_context_revision_service.py",
@@ -100438,6 +100453,18 @@
       "role": "semantic",
       "source_path": "backend/tests/test_rehearsal_ownership.py",
       "title": "test_rehearsal_ownership Module"
+    },
+    {
+      "canonical_path": "modules/test_release_review_verdicts.md",
+      "id": "test_release_review_verdicts",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_release_review_verdicts",
+      "outgoing_internal_links": [
+        "modules/test_release_review_verdicts.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_release_review_verdicts.py",
+      "title": "test_release_review_verdicts Module"
     },
     {
       "canonical_path": "modules/test_replacement_carried_provenance.md",
@@ -109908,6 +109935,7 @@
         "modules/query_limits.md",
         "modules/schemas_team.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_display_state.md",
         "modules/task_hierarchy_service.md",
         "modules/task_service.md",
@@ -111093,7 +111121,6 @@
         "modules/config.md",
         "modules/delivery_dependency_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/github_links.md",
         "modules/github_reconciliation_service.md",
         "modules/identity_service.md",
@@ -111105,6 +111132,7 @@
         "modules/routers_task_domain.md",
         "modules/schemas_task_domain.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_detail.md",
         "modules/task_detail_service.md",
@@ -112120,6 +112148,7 @@
         "modules/release_service.md",
         "modules/routers_task_domain.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_display_state.md",
         "modules/time.md"
       ],
@@ -112556,6 +112585,7 @@
         "modules/review_provenance.md",
         "modules/routers_agent_planning.md",
         "modules/schemas_agent_planning.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
@@ -112584,7 +112614,6 @@
         "modules/delivery_dependency_service.md",
         "modules/discussion_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/identity_service.md",
         "modules/models_agent.md",
         "modules/models_identity.md",
@@ -112596,6 +112625,7 @@
         "modules/routers_agent_planning.md",
         "modules/schemas_agent_planning.md",
         "modules/snapshot_service.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_hierarchy_service.md",
         "modules/task_reactivation_service.md",
@@ -113369,7 +113399,6 @@
         "modules/config.md",
         "modules/delivery_dependency_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/github_links.md",
         "modules/github_reconciliation_service.md",
         "modules/manual_provenance_service.md",
@@ -113381,6 +113410,7 @@
         "modules/schemas_task_domain.md",
         "modules/services_work_metrics.md",
         "modules/snapshot_service.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_domain_service.md",
         "modules/task_postponement_service.md",
@@ -115436,7 +115466,6 @@
         "modules/delivery_dependency_service.md",
         "modules/discussion_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/github_links.md",
         "modules/identity_service.md",
         "modules/mcp_agent_tools.md",
@@ -115449,6 +115478,7 @@
         "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
@@ -115666,7 +115696,6 @@
         "modules/delivery_dependency_service.md",
         "modules/discussion_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/github_links.md",
         "modules/identity_service.md",
         "modules/mcp_agent_tools.md",
@@ -115677,6 +115706,7 @@
         "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
@@ -115704,7 +115734,6 @@
         "modules/delivery_dependency_service.md",
         "modules/discussion_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/github_links.md",
         "modules/identity_service.md",
         "modules/mcp_agent_tools.md",
@@ -115715,6 +115744,7 @@
         "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
@@ -115742,7 +115772,6 @@
         "modules/delivery_dependency_service.md",
         "modules/discussion_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/github_links.md",
         "modules/github_reconciliation_service.md",
         "modules/identity_service.md",
@@ -115755,6 +115784,7 @@
         "modules/retained_planning_output.md",
         "modules/review_provenance.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
         "modules/task_replacement_service.md",
@@ -115813,7 +115843,6 @@
         "modules/delivery_dependency_service.md",
         "modules/discussion_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/github_links.md",
         "modules/github_reconciliation_service.md",
         "modules/identity_service.md",
@@ -115828,6 +115857,7 @@
         "modules/review_provenance.md",
         "modules/schemas_task_domain.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_domain_service.md",
         "modules/task_postponement_service.md",
@@ -116520,7 +116550,6 @@
         "modules/delivery_dependency_service.md",
         "modules/discussion_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/github_links.md",
         "modules/github_reconciliation_service.md",
         "modules/identity_service.md",
@@ -116533,6 +116562,7 @@
         "modules/retained_planning_output.md",
         "modules/review_provenance.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
         "modules/task_replacement_service.md",
@@ -117186,7 +117216,6 @@
         "modules/delivery_dependency_service.md",
         "modules/discussion_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/github_links.md",
         "modules/identity_service.md",
         "modules/mcp_agent_tools.md",
@@ -117197,6 +117226,7 @@
         "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
@@ -117784,7 +117814,6 @@
         "modules/delivery_dependency_service.md",
         "modules/discussion_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/github_links.md",
         "modules/identity_service.md",
         "modules/mcp_agent_tools.md",
@@ -117795,6 +117824,7 @@
         "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
@@ -117866,7 +117896,6 @@
         "modules/delivery_dependency_service.md",
         "modules/discussion_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/github_links.md",
         "modules/identity_service.md",
         "modules/mcp_agent_tools.md",
@@ -117879,6 +117908,7 @@
         "modules/review_provenance.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
@@ -118053,6 +118083,7 @@
         "modules/query_limits.md",
         "modules/release_service.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_display_state.md",
         "modules/task_reactivation_service.md",
@@ -118867,6 +118898,7 @@
         "modules/schemas_iteration.md",
         "modules/schemas_team.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_display_state.md",
         "modules/task_reactivation_service.md",
@@ -118985,6 +119017,7 @@
         "modules/request_source_service.md",
         "modules/schemas_project.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_display_state.md",
         "modules/task_reactivation_service.md",
@@ -119016,6 +119049,7 @@
         "modules/query_limits.md",
         "modules/release_service.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_display_state.md",
         "modules/task_reactivation_service.md",
@@ -119437,6 +119471,7 @@
         "modules/query_limits.md",
         "modules/release_service.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_display_state.md",
         "modules/task_reactivation_service.md",
@@ -120304,7 +120339,6 @@
         "modules/delivery_dependency_service.md",
         "modules/discussion_service.md",
         "modules/execution_planning_window.md",
-        "modules/execution_reconciliation.md",
         "modules/github_links.md",
         "modules/identity_service.md",
         "modules/models_outbound_webhook.md",
@@ -120315,6 +120349,7 @@
         "modules/runtime_peer.md",
         "modules/schemas_agent.md",
         "modules/services_work_metrics.md",
+        "modules/sql_semantics.md",
         "modules/task_brief_service.md",
         "modules/task_reactivation_service.md",
         "modules/task_service.md",
@@ -120824,6 +120859,7 @@
         "modules/20261127_0031_routing_qualification_keys.md",
         "modules/20261127_0032_routing_calibration_contracts.md",
         "modules/20261127_0033_project_routing_conflict_mode.md",
+        "modules/20261128_0034_reviewed_task_version.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -121835,6 +121871,7 @@
         "modules/test_readiness_detail.md",
         "modules/test_refusal_next_steps.md",
         "modules/test_rehearsal_ownership.md",
+        "modules/test_release_review_verdicts.md",
         "modules/test_replacement_carried_provenance.md",
         "modules/test_review_provenance.md",
         "modules/test_review_provenance_transports.md",
@@ -122075,6 +122112,7 @@
         "modules/20261127_0031_routing_qualification_keys.md",
         "modules/20261127_0032_routing_calibration_contracts.md",
         "modules/20261127_0033_project_routing_conflict_mode.md",
+        "modules/20261128_0034_reviewed_task_version.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -123086,6 +123124,7 @@
         "modules/test_readiness_detail.md",
         "modules/test_refusal_next_steps.md",
         "modules/test_rehearsal_ownership.md",
+        "modules/test_release_review_verdicts.md",
         "modules/test_replacement_carried_provenance.md",
         "modules/test_review_provenance.md",
         "modules/test_review_provenance_transports.md",
@@ -123288,5 +123327,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:dc921b90bff722ab080f0d006043c19cbda76dba3fa94e5eabe8d36915051a61"
+  "source_hash": "sha256:fa6bb62d8e72e3e7792094d37db4d33dde4bf9f510a0a8fa22a931c85ca9e45a"
 }

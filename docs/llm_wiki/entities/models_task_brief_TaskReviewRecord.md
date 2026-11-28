@@ -22,6 +22,7 @@ Immutable authorized acceptance or rejection of a particular task, brief and art
 | `brief_revision` | `Mapped[int]` | `mapped_column(Integer)` | — |
 | `artifact_revision` | `Mapped[int]` | `mapped_column(Integer)` | — |
 | `principal_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'))` | — |
+| `reviewed_task_version` | `Mapped[int \| None]` | `mapped_column(Integer)` | — |
 | `verdict` | `Mapped[str]` | `mapped_column(String(16))` | — |
 | `kind` | `Mapped[str]` | `mapped_column(String(32), default='review', server_default='review', nullable=False)` | — |
 | `reason` | `Mapped[str]` | `mapped_column(Text)` | — |
@@ -44,9 +45,12 @@ flowchart LR
     n4["backend/app/routers/task_domain.py"]
     n5["TaskBriefService.record_review (backend/app/services/task_brief_service.py)"]
     n6["backend/app/services/task_recovery_service.py"]
-    n7["backend/tests/test_acceptance_attribution.py"]
-    n8["backend/tests/test_owner_override_acceptance.py"]
-    n9["test_current_review_does_not_depend_on_first_history_page (backend/tests/test_task_domain.py)"]
+    n7["backend/app/services/work_metrics.py"]
+    n8["backend/tests/test_acceptance_attribution.py"]
+    n9["backend/tests/test_owner_override_acceptance.py"]
+    n10["test_older_acceptance_needs_an_assigned_verdict_receipt (backend/tests/test_release_review_verdicts.py)"]
+    n11["test_current_review_does_not_depend_on_first_history_page (backend/tests/test_task_domain.py)"]
+    n12["_accept (backend/tests/test_task_supersession.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -56,6 +60,9 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
+    n11 --> n0
+    n12 --> n0
     click n0 "../modules/models_task_brief.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -63,16 +70,19 @@ flowchart LR
     click n4 "../modules/routers_task_domain.md"
     click n5 "../modules/task_brief_service.md"
     click n6 "../modules/task_recovery_service.md"
-    click n7 "../modules/test_acceptance_attribution.md"
-    click n8 "../modules/test_owner_override_acceptance.md"
-    click n9 "../modules/test_task_domain.md"
+    click n7 "../modules/services_work_metrics.md"
+    click n8 "../modules/test_acceptance_attribution.md"
+    click n9 "../modules/test_owner_override_acceptance.md"
+    click n10 "../modules/test_release_review_verdicts.md"
+    click n11 "../modules/test_task_domain.md"
+    click n12 "../modules/test_task_supersession.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_task_brief](../modules/models_task_brief.md) | 0 | `artifact_revision`, `brief_revision`, `created_at`, `evidence`, `id`, `kind`, `original_task_id`, `principal_id`, `reason`, `task_id`, `task_version`, `verdict` |
+| [models_task_brief](../modules/models_task_brief.md) | 0 | `artifact_revision`, `brief_revision`, `created_at`, `evidence`, `id`, `kind`, `original_task_id`, `principal_id`, `reason`, `reviewed_task_version`, `task_id`, `task_version` |
 
 ### Structure
 
@@ -89,6 +99,9 @@ flowchart LR
 | `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `TaskBriefService.record_review` | call | [task_brief_service](../modules/task_brief_service.md) | 1 |
 | `task_recovery_service` | import | [task_recovery_service](../modules/task_recovery_service.md) | — |
+| `work_metrics` | import | [services_work_metrics](../modules/services_work_metrics.md) | — |
 | `test_acceptance_attribution` | import | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | — |
 | `test_owner_override_acceptance` | import | [test_owner_override_acceptance](../modules/test_owner_override_acceptance.md) | — |
+| `test_older_acceptance_needs_an_assigned_verdict_receipt` | call | [test_release_review_verdicts](../modules/test_release_review_verdicts.md) | 1 |
 | `test_current_review_does_not_depend_on_first_history_page` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |
+| `_accept` | call | [test_task_supersession](../modules/test_task_supersession.md) | 1 |

@@ -207,8 +207,8 @@ flowchart LR
 | domain_result | str | 60 | `str(exc)` |
 | domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | convert_task_routing | TaskBriefService.routing_conversion | 273 | `TaskBriefService(db).routing_conversion(task_id, data)` |
-| TaskBriefService.routing_conversion | self.tasks.get_by_id (backend/app/services/task…ervice.routing_conversion) | 344 | `self.tasks.get_by_id(task_id)` |
-| TaskBriefService.routing_conversion | LookupError | 346 | `LookupError('Task not found or inaccessible')` |
+| TaskBriefService.routing_conversion | self.tasks.get_by_id (backend/app/services/task…ervice.routing_conversion) | 349 | `self.tasks.get_by_id(task_id)` |
+| TaskBriefService.routing_conversion | LookupError | 351 | `LookupError('Task not found or inaccessible')` |
 
 ### Boundary effects
 
@@ -223,8 +223,8 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 58 |
 | external_call | `domain_result` | `HTTPException` | 60 |
 | external_call | `domain_result` | `HTTPException` | 62 |
-| unresolved_call | `TaskBriefService.routing_conversion` | `self.tasks.get_by_id` | 344 |
-| external_call | `TaskBriefService.routing_conversion` | `LookupError` | 346 |
+| unresolved_call | `TaskBriefService.routing_conversion` | `self.tasks.get_by_id` | 349 |
+| external_call | `TaskBriefService.routing_conversion` | `LookupError` | 351 |
 | step_limit | `convert_task_routing` | `first 12 steps` | 0 |
 | truncated_flow | `convert_task_routing` | `depth limit` | 0 |
 

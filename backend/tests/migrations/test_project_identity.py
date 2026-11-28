@@ -56,6 +56,12 @@ def seed_dependents(db):
     db.execute(Iteration.__table__.insert().values(id=1, name="Iteration", calendar_id=1, project_id=5,
         start_date=datetime(2026, 1, 1).date(), end_date=datetime(2026, 1, 31).date()))
     db.execute(Task.__table__.insert().values(id=1, title="Deliverable", project_id=5, iteration_id=1))
+    reviews = Table("task_review_records", MetaData(), autoload_with=db)
+    db.execute(reviews.insert().values(
+        task_id=1, original_task_id=1, task_version=1, principal_id=1,
+        brief_revision=0, artifact_revision=0, verdict="accept", reason="Reviewed delivery",
+        evidence="Verified deliverable", created_at=datetime(2026, 1, 1, tzinfo=UTC),
+    ))
     db.execute(ProjectMembership.__table__.insert().values(principal_id=1, project_id=5, role="manager"))
     db.execute(CommandAudit.__table__.insert().values(principal_id=1, project_id=5, action="projects:edit",
         source="rest", correlation_id="creation", details={"entity_id": 5}))
@@ -74,7 +80,7 @@ LATER_COLUMNS = {
     "projects": {"require_different_review_publisher": 0, "routing_conflict_mode": "refuse"},
     "agent_model_catalog_entries": {"local_first": 0, "effort": "unknown", "qualification_keys": "[]"},
     "tasks": {"execution_planning_window": None},
-    "task_review_records": {"kind": "review"},
+    "task_review_records": {"kind": "review", "reviewed_task_version": None},
 }
 
 
@@ -171,6 +177,9 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         assert after_catalog["delivery_dependencies"]["columns"].pop("target_branch") == {"type": {"family": "text"}, "nullable": True}
         # A later revision tells an owner's override acceptance apart from an ordinary review.
         assert after_catalog["task_review_records"]["columns"].pop("kind") == {"type": {"family": "text"}, "nullable": False}
+        assert after_catalog["task_review_records"]["columns"].pop("reviewed_task_version") == {
+            "type": {"family": "integer"}, "nullable": True,
+        }
         # A later revision records postponed tasks and their reactivation requirements.
         assert after_catalog.pop("task_postponements")["checks"] == [
             "ck_task_postponements_from_status", "ck_task_postponements_reactivation"]

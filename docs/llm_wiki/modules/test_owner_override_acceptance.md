@@ -15,6 +15,7 @@ An owner may accept one resolved task while the different-publisher policy stays
 | `app.models.agent` | `TaskEvent` |
 | `app.models.identity` | `CommandAudit`, `ProjectMembership`, `WorkspaceMembership` |
 | `app.models.project` | `Project` |
+| `app.models.release` | `Release` |
 | `app.models.task` | `Task` |
 | `app.models.task_brief` | `TaskReviewRecord` |
 | `app.schemas.task_brief` | `BriefCriterion`, `OwnerAcceptanceWrite`, `TaskBrief` |
@@ -44,7 +45,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (13) |
+| Outbound | `backend` (14) |
 
 ### External packages
 
@@ -52,7 +53,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 1 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -63,6 +64,7 @@ flowchart LR
 | `acceptance_body` | *(async)* `(factory, task_id, reason = REASON)` | — | — |
 | `test_owner_override_accepts_one_task_and_keeps_the_policy_for_the_rest` | *(async)* `(managed_store, role)` | `@pytest.mark.parametrize('role', ['owner', 'operator'])` | — |
 | `test_override_refuses_non_owners_missing_reasons_and_unpoliced_projects` | *(async)* `(managed_store)` | — | — |
+| `test_release_distinguishes_human_review_from_accountable_override` | *(async)* `(managed_store, override)` | `@pytest.mark.parametrize('override', [False, True])` | — |
 | `test_review_override_header_waives_only_self_review_on_an_owner_override` | *(async)* `(managed_store)` | — | — |
 | `test_trusted_local_browser_without_a_signed_in_person_cannot_override` | *(async)* `(delivery_store)` | — | — |
 | `test_only_a_signed_in_owner_or_operator_may_override` | *(async)* `(delivery_store, authority)` | `@pytest.mark.parametrize('authority', [Authority(None, 'local', local=True), Authority(1, 'system', workspace_role='operator', review_override=True, reason=REASON), Authority(None, 'agent', actor_id=1, actor_role='verifier', local=True, scopes=frozenset({'admin'})), Authority(1, 'human', workspace_role='owner', read_only=True), Authority(1, 'human', workspace_role='member', projects={1: 'manager'})], ids=['trusted-local', 'operator-key', 'agent', 'observer', 'project-manager'])` | — |

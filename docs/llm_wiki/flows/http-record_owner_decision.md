@@ -112,7 +112,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| record_owner_decision | domain_result | 445 | `domain_result(...)` |
+| record_owner_decision | domain_result | 452 | `domain_result(...)` |
 | domain_result | HTTPException | 56 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 56 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 58 | `HTTPException(404, detail=str(...))` |
@@ -120,8 +120,8 @@ flowchart LR
 | domain_result | HTTPException | 60 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 60 | `str(exc)` |
 | domain_result | HTTPException | 62 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| record_owner_decision | ReactivationService(…).record_owner_decision | 445 | `ReactivationService(db).record_owner_decision(task_id, requirement_id, data)` |
-| record_owner_decision | ReactivationService | 445 | `ReactivationService(db)` |
+| record_owner_decision | ReactivationService(…).record_owner_decision | 452 | `ReactivationService(db).record_owner_decision(task_id, requirement_id, data)` |
+| record_owner_decision | ReactivationService | 452 | `ReactivationService(db)` |
 
 ### Boundary effects
 
@@ -136,7 +136,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 58 |
 | external_call | `domain_result` | `HTTPException` | 60 |
 | external_call | `domain_result` | `HTTPException` | 62 |
-| unresolved_call | `record_owner_decision` | `ReactivationService(db).record_owner_decision` | 445 |
+| unresolved_call | `record_owner_decision` | `ReactivationService(db).record_owner_decision` | 452 |
 
 ## Behavior
 

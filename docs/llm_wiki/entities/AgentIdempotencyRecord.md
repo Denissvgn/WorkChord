@@ -104,4 +104,4 @@ flowchart LR
 | `retained_planning_output` | import | [retained_planning_output](../modules/retained_planning_output.md) | — |
 | `review_provenance` | import | [review_provenance](../modules/review_provenance.md) | — |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

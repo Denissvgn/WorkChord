@@ -42,11 +42,12 @@ flowchart LR
     n4["test_operator_acceptance_records_the_operator_only_with_an_accountable_override (backend/tests/test_acceptance_attribution.py)"]
     n5["test_signed_in_acceptance_records_the_signed_in_person (backend/tests/test_acceptance_attribution.py)"]
     n6["accepted_work (backend/tests/test_delivery_metrics.py)"]
-    n7["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
-    n8["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
-    n9["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
-    n10["test_reactivation_returns_work_with_brief_progress_evidence_and_provenance_intact (backend/tests/test_task_postponement.py)"]
-    n11["_accept (backend/tests/test_task_reactivation.py)"]
+    n7["test_one_command_that_accepts_a_dependency_chain_keeps_acceptance (backend/tests/test_planning_only_edit_fence.py)"]
+    n8["test_backlog_manual_execution_independent_review_and_reopen (backend/tests/test_task_domain.py)"]
+    n9["test_rework_requires_fresh_progress_and_preserves_prior_evidence (backend/tests/test_task_domain.py)"]
+    n10["test_dependency_mutations_invalidate_evidence_without_erasing_history (backend/tests/test_task_domain_integrity.py)"]
+    n11["test_reactivation_returns_work_with_brief_progress_evidence_and_provenance_intact (backend/tests/test_task_postponement.py)"]
+    n12["_accept (backend/tests/test_task_reactivation.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -58,17 +59,19 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/schemas_task_brief.md"
     click n2 "../modules/routers_task_domain.md"
     click n3 "../modules/task_brief_service.md"
     click n4 "../modules/test_acceptance_attribution.md"
     click n5 "../modules/test_acceptance_attribution.md"
     click n6 "../modules/test_delivery_metrics.md"
-    click n7 "../modules/test_task_domain.md"
+    click n7 "../modules/test_planning_only_edit_fence.md"
     click n8 "../modules/test_task_domain.md"
-    click n9 "../modules/test_task_domain_integrity.md"
-    click n10 "../modules/test_task_postponement.md"
-    click n11 "../modules/test_task_reactivation.md"
+    click n9 "../modules/test_task_domain.md"
+    click n10 "../modules/test_task_domain_integrity.md"
+    click n11 "../modules/test_task_postponement.md"
+    click n12 "../modules/test_task_reactivation.md"
 ```
 
 ### Summary
@@ -92,6 +95,7 @@ flowchart LR
 | `test_operator_acceptance_records_the_operator_only_with_an_accountable_override` | call | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | 2 |
 | `test_signed_in_acceptance_records_the_signed_in_person` | call | [test_acceptance_attribution](../modules/test_acceptance_attribution.md) | 1 |
 | `accepted_work` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
+| `test_one_command_that_accepts_a_dependency_chain_keeps_acceptance` | call | [test_planning_only_edit_fence](../modules/test_planning_only_edit_fence.md) | 1 |
 | `test_backlog_manual_execution_independent_review_and_reopen` | call | [test_task_domain](../modules/test_task_domain.md) | 1 |
 | `test_rework_requires_fresh_progress_and_preserves_prior_evidence` | call | [test_task_domain](../modules/test_task_domain.md) | 2 |
 | `test_dependency_mutations_invalidate_evidence_without_erasing_history` | call | [test_task_domain_integrity](../modules/test_task_domain_integrity.md) | 1 |

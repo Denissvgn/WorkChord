@@ -102,7 +102,7 @@ flowchart LR
 | [ReactivationRequirement](../entities/ReactivationRequirement.md) | Interface | 557 | — | — |
 | [TaskPostponementRecord](../entities/types_task_TaskPostponementRecord.md) | Interface | 561 | — | — |
 | [TaskPostponementResponse](../entities/types_task_TaskPostponementResponse.md) | Interface | 567 | — | — |
-| [TaskReviewRecord](../entities/types_task_TaskReviewRecord.md) | Interface | 569 | — | One recorded review. `owner_override` is an owner's acceptance that set aside publisher independence. |
+| [TaskReviewRecord](../entities/types_task_TaskReviewRecord.md) | Interface | 569 | — | One recorded review. `owner_override` marks an explicit owner or operator override. |
 | [RefusalNextStep](../entities/types_task_RefusalNextStep.md) | Interface | 574 | — | What a person or agent may do about a refusal, from the server's one refusal catalogue. |
 | [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 579 | — | — |
 | [ManualProvenanceExecutor](../entities/types_task_ManualProvenanceExecutor.md) | Interface | 581 | — | The executor of work that was delivered outside recorded runs. |

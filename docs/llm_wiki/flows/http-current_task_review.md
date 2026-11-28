@@ -93,9 +93,9 @@ sequenceDiagram
     p0-->>p30: db.scalar (backend/app/routers/task_…in.py:current_task_review)(...)
 ```
 
-> Call sequence diagram shows 30 of 293 interactions; 263 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 294 interactions; 264 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 87 (86 omitted); unresolved 1 of 135 (134 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 87 (86 omitted); unresolved 1 of 136 (135 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -122,14 +122,14 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 72; effect analysis evaluated: 51, partial: 0, unavailable: 21. Counts include steps omitted from the displayed trace.
 
-Collector observations for 51 source steps with known totals: observed: 258, emitted: 258, omitted: 0. Unavailable totals are excluded.
+Collector observations for 51 source steps with known totals: observed: 263, emitted: 263, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `current_task_review` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `current_task_review` | `available` | `evaluated` | `available` | `8` | `8` | `0` |
 | `domain_result` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `exc.detail` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -183,7 +183,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `current_task_review` | `task_id: int`, `db: DB` | - | - | `{...}` |
+| `current_task_review` | `task_id: int`, `db: DB` | `TaskReviewRecord`, `TaskReviewRecord`, `TaskReviewRecord`, `Task`, `TaskReviewRecord` | - | `{...}` |
 | `domain_result` | `awaitable` | `TaskVersionConflictError` | - | `result` |
 | `HTTPException` | - | - | - | - |
 | `exc.detail` | - | - | - | - |

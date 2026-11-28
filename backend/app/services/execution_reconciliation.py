@@ -6,7 +6,7 @@ import json
 import re
 from contextlib import nullcontext
 
-from sqlalchemy import JSON, cast, func, select, update
+from sqlalchemy import select, update
 
 from app.authority import AuthorityError, require_operator
 from app.commands import command_transaction
@@ -20,6 +20,7 @@ from app.services.agent_model_catalog_service import AgentModelConflictError
 from app.services.agent_routing_policy import ROUTING_DECISION_AUTHORITY
 from app.services.agent_service import actor_has_scope, is_admin_key_principal
 from app.services.agent_team_setup_service import _digest
+from app.sql_semantics import json_text_field as _json_value
 from app.utils.time import as_utc
 
 
@@ -33,16 +34,6 @@ def _object(encoded):
     except (TypeError, ValueError):
         return {}
     return value if isinstance(value, dict) else {}
-
-
-def _json_value(db, column, *path, integer=False):
-    """Task event payloads are historical text on both supported databases."""
-    if db.get_bind().dialect.name == "sqlite":
-        return func.json_extract(column, "$." + ".".join(path))
-    value = cast(column, JSON)
-    for key in path:
-        value = value[key]
-    return value.as_integer() if integer else value.as_string()
 
 
 async def _ack_at_begin(db, run, supplied):

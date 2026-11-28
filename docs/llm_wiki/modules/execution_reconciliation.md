@@ -26,11 +26,12 @@ An operator can preview which historical run facts are supported by contemporane
 | `app.services.agent_service` | `actor_has_scope`, `is_admin_key_principal` |
 | `app.services.agent_team_setup_service` | `_digest` |
 | `app.services.review_provenance` | `recover_terminal_observation` |
+| `app.sql_semantics` | `json_text_field` |
 | `app.utils.time` | `as_utc` |
 | `contextlib` | `nullcontext` |
 | `json` | `json` |
 | `re` | `re` |
-| `sqlalchemy` | `JSON`, `cast`, `func`, `select`, `update` |
+| `sqlalchemy` | `select`, `update` |
 
 ## Local dependency map
 
@@ -51,7 +52,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (6) |
-| Outbound | `backend` (14) |
+| Outbound | `backend` (15) |
 
 ### External packages
 
@@ -59,14 +60,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `_object` | `(encoded)` | — | — |
-| `_json_value` | `(db, column, *path, integer = False)` | — | Task event payloads are historical text on both supported databases. |
 | `_ack_at_begin` | *(async)* `(db, run, supplied)` | — | — |
 | `_latest_configuration` | *(async)* `(db, run, kind, target_id)` | — | An operator-only mutation without a full historic record fences off older evidence. |
 | `_actor_binding_ids` | *(async)* `(db, run)` | — | — |
