@@ -22,6 +22,7 @@ An original superseded by work already closed or accepted: nothing reopens, and 
 | `app.models.project` | `ProjectMilestone` |
 | `app.models.release` | `Release`, `release_tasks` |
 | `app.models.task` | `Task`, `TaskDependency` |
+| `app.models.task_brief` | `TaskReviewRecord` |
 | `app.models.task_postponement` | `TaskPostponement`, `TaskReactivationRequirement` |
 | `app.models.task_replacement` | `TaskReplacement` |
 | `app.schemas.task_replacement` | `TaskReplacementCreate`, `TaskSupersessionCreate` |
@@ -61,7 +62,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (1) |
-| Outbound | `backend` (24) |
+| Outbound | `backend` (25) |
 
 ### External packages
 
@@ -69,7 +70,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

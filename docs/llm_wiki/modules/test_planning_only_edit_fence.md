@@ -22,11 +22,13 @@ A planning-only task edit keeps sealed issued work valid; an execution-input edi
 | `app.models.task` | `Task`, `TaskDependency` |
 | `app.routers.tasks` | `apply_batch_update_items` |
 | `app.schemas.task` | `TaskUpdate`, `TaskBatchUpdateItem`, `TaskUpdate`, `TaskUpdate` |
+| `app.schemas.task_brief` | `TaskReviewWrite` |
 | `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService`, `DeliveryDependencyService` |
 | `app.services.execution_planning_window` | `ITERATION_END_EXTENSION`, `PLANNING_ONLY_EDIT`, `PLANNING_ONLY_FIELDS`, `current_window`, `is_planning_only_change` |
 | `app.services.identity_service` | `IdentityService`, `initialize_control_plane` |
-| `app.services.task_service` | `TaskService`, `TaskService`, `TaskService`, `TaskService` |
+| `app.services.task_brief_service` | `TaskBriefService` |
+| `app.services.task_service` | `TaskService`, `TaskService`, `TaskService` |
 | `app.utils.time` | `utc_now` |
 | `datetime` | `timedelta` |
 | `httpx` | `httpx` |
@@ -56,7 +58,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (22) |
+| Outbound | `backend` (24) |
 
 ### External packages
 
@@ -64,7 +66,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

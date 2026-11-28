@@ -2,7 +2,7 @@
 
 **Entry point:** `workspace_get_iteration_summary` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), and 24 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [app_maintenance](../modules/app_maintenance.md), [authority](../modules/authority.md), [calendar_rules](../modules/calendar_rules.md), and 25 more
 
 **Complete modules touched:**
 
@@ -28,6 +28,7 @@
 - [schemas_iteration](../modules/schemas_iteration.md)
 - [schemas_team](../modules/schemas_team.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
+- [sql_semantics](../modules/sql_semantics.md)
 - [task_brief_service](../modules/task_brief_service.md)
 - [task_display_state](../modules/task_display_state.md)
 - [task_reactivation_service](../modules/task_reactivation_service.md)
@@ -69,8 +70,8 @@ sequenceDiagram
     participant p24 as DiscussionService.enqueue
     participant p25 as working_today
     participant p26 as state_clause
-    participant p27 as displayed_state_expression
-    participant p28 as actor_has_scope
+    participant p27 as _release_review_exists
+    participant p28 as displayed_state_expression
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -99,15 +100,15 @@ sequenceDiagram
     p8->>p24: DiscussionService.enqueue
     p11->>p25: working_today
     p11->>p26: state_clause
-    p11->>p27: displayed_state_expression
-    p17->>p28: actor_has_scope
+    p11->>p27: _release_review_exists
+    p11->>p28: displayed_state_expression
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 744 interactions; 714 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 772 interactions; 742 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 238 (237 omitted); unresolved 1 of 359 (358 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 244 (243 omitted); unresolved 1 of 377 (376 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -121,7 +122,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 161 groups; 153 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 166 groups; 158 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -134,9 +135,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 148; effect analysis evaluated: 101, partial: 3, unavailable: 44. Counts include steps omitted from the displayed trace.
+Source steps: 152; effect analysis evaluated: 105, partial: 3, unavailable: 44. Counts include steps omitted from the displayed trace.
 
-Collector observations for 104 source steps with known totals: observed: 452, emitted: 436, omitted: 16. Unavailable totals are excluded.
+Collector observations for 108 source steps with known totals: observed: 477, emitted: 460, omitted: 17. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

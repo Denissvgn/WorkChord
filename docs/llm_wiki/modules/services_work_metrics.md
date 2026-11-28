@@ -8,7 +8,7 @@ Canonical leaf work, acceptance and distinct calendar-based schedule signals.
 
 Effective work flags traverse complete ancestry for both projections and execution policy. Direct or inherited deferral excludes execution eligibility; missing links and cycles are rejected instead of being interpreted as an undeferred leaf. Flat operator inventories supply their complete by-ID basis without requiring lazy relationship reads.
 
-Python projections and the recursive SQL aggregate distinguish required/optional/deferred leaves, implemented work, current accepted work, unknown historic acceptance, late start, overdue open delivery and forecast overflow. Working dates use project or calendar zones. Structural parents do not inflate delivery denominators, and unresolved hierarchy cannot be silently treated as complete input.
+Python projections and the recursive SQL aggregate distinguish required/optional/deferred leaves, implemented work, current accepted work, unknown historic acceptance, late start, overdue open delivery and forecast overflow. Working dates use project or calendar zones. Structural parents do not inflate delivery denominators, and unresolved hierarchy cannot be silently treated as complete input. Release totals require a current ordinary review with independent provenance. Owner overrides establish task-level acceptance.
 
 Nullable scheduling is compared safely when traversing backlog ancestry, retaining project boundaries and complete leaf accounting. Blocked counts include an explicit block or an unavailable prerequisite, including a canceled, missing or inaccessible target, while excluding ineligible leaves.
 
@@ -22,15 +22,19 @@ Canonical inclusion follows complete same-scope ancestry. Incomplete or cyclic a
 |--------|---------|
 | `app.authority` | `_scope_conditions` |
 | `app.commands` | `PlanningConflict`, `HierarchyScopeError` |
+| `app.models.agent` | `AgentTaskAssignment`, `AgentIdempotencyRecord`, `TaskEvent` |
 | `app.models.calendar` | `Calendar` |
+| `app.models.identity` | `Principal` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
 | `app.models.task` | `Task`, `Task`, `Task`, `TaskDependency` |
+| `app.models.task_brief` | `TaskReviewRecord` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_PROJECT_TREE_TASKS` |
 | `app.services.task_display_state` | `displayed_state_expression`, `state_clause` |
+| `app.sql_semantics` | `json_text_field` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `datetime` | `datetime` |
-| `sqlalchemy` | `select`, `or_`, `exists`, `func`, `select`, `select`, `case`, `func`, `or_`, `and_`, `false`, `literal` |
+| `sqlalchemy` | `select`, `or_`, `exists`, `func`, `select`, `or_`, `select`, `select`, `case`, `func`, `or_`, `and_`, `false`, `literal` |
 | `zoneinfo` | `ZoneInfo` |
 
 ## Local dependency map
@@ -52,7 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (38) |
-| Outbound | `backend` (9) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -60,7 +64,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 47 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 51 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -73,4 +77,5 @@ flowchart LR
 | `leaf_metrics` | `(tasks, *, iteration_end = None, project_target = None, timezone = 'UTC', now = None)` | — | Use a complete scoped task set; parents never contribute additional delivered work. |
 | `included_work_ids` | *(async)* `(db, iteration_ids)` | — | Select leaves with complete reachable ancestry and inherited work policy. |
 | `scoped_metric_tasks` | *(async)* `(db, *, project_id = None, iteration_id = None)` | — | — |
-| `aggregate_metrics` | *(async)* `(db, *, project_id = None, iteration_id = None, project_ids = None, group_by = None, task_ids = None, zone_map = None, now = None, matching = None, limit = 200, after_id = None)` | — | Aggregate all authorized leaves in SQL, including inherited scheduling facets. |
+| `_release_review_exists` | `(db, task)` | — | Require an ordinary verdict for the current acceptance episode of this leaf. |
+| `aggregate_metrics` | *(async)* `(db, *, project_id = None, iteration_id = None, project_ids = None, group_by = None, task_ids = None, zone_map = None, now = None, matching = None, limit = 200, after_id = None, release_scope = False)` | — | Aggregate all authorized leaves in SQL, including inherited scheduling facets. |

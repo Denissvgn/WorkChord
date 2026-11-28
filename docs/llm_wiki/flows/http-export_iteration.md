@@ -2,7 +2,7 @@
 
 **Entry point:** `export_iteration` (`http`)
 **Source:** [export](../modules/export.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [export](../modules/export.md), [iteration_service](../modules/iteration_service.md), and 8 more
+**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [export](../modules/export.md), [iteration_service](../modules/iteration_service.md), and 9 more
 
 **Complete modules touched:**
 
@@ -13,6 +13,7 @@
 - [query_limits](../modules/query_limits.md)
 - [schemas_team](../modules/schemas_team.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
+- [sql_semantics](../modules/sql_semantics.md)
 - [task_display_state](../modules/task_display_state.md)
 - [task_hierarchy_service](../modules/task_hierarchy_service.md)
 - [task_service](../modules/task_service.md)
@@ -40,23 +41,23 @@ sequenceDiagram
     participant p11 as TeamService._attach_assignee_profiles
     participant p12 as working_today
     participant p13 as state_clause
-    participant p14 as displayed_state_expression
-    participant p15 as TaskHierarchyService._load_iteration_tree
-    participant p16 as utc_now
-    participant p17 as _scope_conditions
-    participant p18 as TeamService._member_options
-    participant p19 as CollectionLimitExceededError
-    participant p20 as HierarchyScopeError
-    participant p21 as TaskHierarchyService._task_graph_query
-    participant p22 as internal_authority
-    participant p23 as validate_state_filter
-    participant p24 as TaskHierarchyService
-    participant p25 as as_utc
-    participant p26 as withdrawn_by_successor
-    participant p27 as TeamMemberProfileCompact
-    participant p28 as HTTPException
-    participant p29 as iteration.start_date.isoformat
-    participant p30 as iteration.end_date.isoformat
+    participant p14 as _release_review_exists
+    participant p15 as displayed_state_expression
+    participant p16 as TaskHierarchyService._load_iteration_tree
+    participant p17 as utc_now
+    participant p18 as _scope_conditions
+    participant p19 as TeamService._member_options
+    participant p20 as CollectionLimitExceededError
+    participant p21 as HierarchyScopeError
+    participant p22 as TaskHierarchyService._task_graph_query
+    participant p23 as internal_authority
+    participant p24 as validate_state_filter
+    participant p25 as TaskHierarchyService
+    participant p26 as as_utc
+    participant p27 as withdrawn_by_successor
+    participant p28 as TeamMemberProfileCompact
+    participant p29 as HTTPException
+    participant p30 as iteration.start_date.isoformat
     p0->>p1: TaskService.get_by_iteration
     p0->>p2: TeamService.get_by_iteration
     p0->>p3: aggregate_metrics
@@ -70,28 +71,28 @@ sequenceDiagram
     p2->>p11: TeamService._attach_assignee_profiles
     p3->>p12: working_today
     p3->>p13: state_clause
-    p3->>p14: displayed_state_expression
-    p10->>p15: TaskHierarchyService._load_iteration_tree
-    p3->>p16: utc_now
-    p3->>p17: _scope_conditions
-    p2->>p18: TeamService._member_options
-    p1->>p19: CollectionLimitExceededError
-    p3->>p20: HierarchyScopeError
-    p9->>p21: TaskHierarchyService._task_graph_query
-    p11->>p22: internal_authority
-    p13->>p23: validate_state_filter
-    p9->>p24: TaskHierarchyService
-    p12->>p25: as_utc
-    p14->>p26: withdrawn_by_successor
-    p11->>p27: TeamMemberProfileCompact
-    p0-->>p28: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
-    p0-->>p29: iteration.start_date.isoformat
-    p0-->>p30: iteration.end_date.isoformat
+    p3->>p14: _release_review_exists
+    p3->>p15: displayed_state_expression
+    p10->>p16: TaskHierarchyService._load_iteration_tree
+    p3->>p17: utc_now
+    p3->>p18: _scope_conditions
+    p2->>p19: TeamService._member_options
+    p1->>p20: CollectionLimitExceededError
+    p3->>p21: HierarchyScopeError
+    p9->>p22: TaskHierarchyService._task_graph_query
+    p11->>p23: internal_authority
+    p13->>p24: validate_state_filter
+    p9->>p25: TaskHierarchyService
+    p12->>p26: as_utc
+    p15->>p27: withdrawn_by_successor
+    p11->>p28: TeamMemberProfileCompact
+    p0-->>p29: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
+    p0-->>p30: iteration.start_date.isoformat
 ```
 
-> Call sequence diagram shows 30 of 432 interactions; 402 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 460 interactions; 430 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 157 (156 omitted); unresolved 2 of 235 (233 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 163 (162 omitted); unresolved 1 of 253 (252 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -105,7 +106,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_service.py:TaskService.get_by_iteration` | 13 | - | external | 2 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._load_iteration_tree` | 41 | - | unresolved | 20 |
 | `backend/app/services/task_hierarchy_service.py:TaskHierarchyService._load_iteration_tree` | 41 | - | external | 11 |
-> Omission summary shows 8 of 43 groups; 35 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 48 groups; 40 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -116,9 +117,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 41; effect analysis evaluated: 29, partial: 1, unavailable: 11. Counts include steps omitted from the displayed trace.
+Source steps: 45; effect analysis evaluated: 33, partial: 1, unavailable: 11. Counts include steps omitted from the displayed trace.
 
-Collector observations for 30 source steps with known totals: observed: 138, emitted: 135, omitted: 3. Unavailable totals are excluded.
+Collector observations for 34 source steps with known totals: observed: 163, emitted: 159, omitted: 4. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

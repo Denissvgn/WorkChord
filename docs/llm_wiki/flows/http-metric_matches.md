@@ -2,7 +2,7 @@
 
 **Entry point:** `metric_matches` (`http`)
 **Source:** [routers_task_domain](../modules/routers_task_domain.md)
-**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [query_limits](../modules/query_limits.md), and 5 more
+**Modules touched:** [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), [query_limits](../modules/query_limits.md), and 6 more
 
 **Complete modules touched:**
 
@@ -13,6 +13,7 @@
 - [release_service](../modules/release_service.md)
 - [routers_task_domain](../modules/routers_task_domain.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
+- [sql_semantics](../modules/sql_semantics.md)
 - [task_display_state](../modules/task_display_state.md)
 - [time](../modules/time.md)
 
@@ -34,23 +35,23 @@ sequenceDiagram
     participant p8 as scoped_metric_tasks
     participant p9 as working_today
     participant p10 as state_clause
-    participant p11 as displayed_state_expression
-    participant p12 as AuthorityError
-    participant p13 as ReleaseService._release_options
-    participant p14 as Settings
-    participant p15 as utc_now
-    participant p16 as _scope_conditions
-    participant p17 as HierarchyScopeError
-    participant p18 as validate_state_filter
-    participant p19 as as_utc
-    participant p20 as withdrawn_by_successor
-    participant p21 as CollectionLimitExceededError
-    participant p22 as HTTPException
-    participant p23 as db.get
-    participant p24 as sum (backend/app/routers/task_domain.py:metric_matches)
-    participant p25 as self.db.execute
-    participant p26 as db.info.get (backend/app/authority.py:require_project)
-    participant p27 as select(…).options(…).where
+    participant p11 as _release_review_exists
+    participant p12 as displayed_state_expression
+    participant p13 as AuthorityError
+    participant p14 as ReleaseService._release_options
+    participant p15 as Settings
+    participant p16 as utc_now
+    participant p17 as _scope_conditions
+    participant p18 as HierarchyScopeError
+    participant p19 as validate_state_filter
+    participant p20 as as_utc
+    participant p21 as withdrawn_by_successor
+    participant p22 as json_text_field
+    participant p23 as CollectionLimitExceededError
+    participant p24 as HTTPException
+    participant p25 as db.get
+    participant p26 as sum (backend/app/routers/task_domain.py:metric_matches)
+    participant p27 as self.db.execute
     p0->>p1: ReleaseService.get_by_id
     p0->>p2: require_project
     p0->>p3: ReleaseService
@@ -61,37 +62,37 @@ sequenceDiagram
     p4->>p8: scoped_metric_tasks
     p5->>p9: working_today
     p5->>p10: state_clause
-    p5->>p11: displayed_state_expression
-    p2->>p12: AuthorityError
-    p1->>p13: ReleaseService._release_options
-    p6->>p14: Settings
-    p5->>p15: utc_now
-    p5->>p16: _scope_conditions
-    p5->>p17: HierarchyScopeError
-    p10->>p18: validate_state_filter
-    p9->>p19: as_utc
-    p11->>p20: withdrawn_by_successor
-    p8->>p21: CollectionLimitExceededError
-    p0-->>p22: HTTPException(422, detail=[...])
-    p0-->>p23: db.get(Project, project_id)
-    p0-->>p24: sum (backend/app/routers/task_domain.py:metric_matches)(...)
-    p0-->>p22: HTTPException(422, detail=[...])
-    p0-->>p22: HTTPException(404, detail='Release not found')
-    p0-->>p22: HTTPException(404, detail='Project not found')
-    p1-->>p25: self.db.execute(...)
-    p2-->>p26: db.info.get (backend/app/authority.py:require_project)('authority')
-    p1-->>p27: select(…).options(…).where(...)
+    p5->>p11: _release_review_exists
+    p5->>p12: displayed_state_expression
+    p2->>p13: AuthorityError
+    p1->>p14: ReleaseService._release_options
+    p6->>p15: Settings
+    p5->>p16: utc_now
+    p5->>p17: _scope_conditions
+    p5->>p18: HierarchyScopeError
+    p10->>p19: validate_state_filter
+    p9->>p20: as_utc
+    p12->>p21: withdrawn_by_successor
+    p11->>p22: json_text_field
+    p8->>p23: CollectionLimitExceededError
+    p0-->>p24: HTTPException(422, detail=[...])
+    p0-->>p25: db.get(Project, project_id)
+    p0-->>p26: sum (backend/app/routers/task_domain.py:metric_matches)(...)
+    p0-->>p24: HTTPException(422, detail=[...])
+    p0-->>p24: HTTPException(404, detail='Release not found')
+    p0-->>p24: HTTPException(404, detail='Project not found')
+    p1-->>p27: self.db.execute(...)
 ```
 
-> Call sequence diagram shows 30 of 346 interactions; 316 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 374 interactions; 344 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 5 of 133 (128 omitted); unresolved 4 of 180 (176 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 5 of 139 (134 omitted); unresolved 2 of 198 (196 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
-| `backend/app/services/release_service.py:ReleaseService.get_by_id` | 6 | - | unresolved | 2 |
+| `backend/app/services/release_service.py:ReleaseService.get_by_id` | 6 | - | unresolved | 3 |
 | `backend/app/services/release_service.py:ReleaseService.get_by_id` | 6 | - | external | 1 |
 | `backend/app/services/release_service.py:ReleaseService._release_options` | 11 | - | external | 1 |
 | `backend/app/services/release_service.py:ReleaseService._attach_work_metrics` | 14 | [backend/app/services/release_service.py](../modules/release_service.md) | internal | 1 |
@@ -99,7 +100,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/work_metrics.py:scoped_metric_tasks` | 16 | - | unresolved | 6 |
 | `backend/app/services/release_service.py:ReleaseService._attach_work_metrics` | 14 | [backend/app/services/work_metrics.py](../modules/services_work_metrics.md) | internal | 1 |
 | `backend/app/utils/time.py:utc_now` | 28 | - | external | 1 |
-> Omission summary shows 8 of 32 groups; 24 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 37 groups; 29 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -110,9 +111,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 34; effect analysis evaluated: 25, partial: 3, unavailable: 6. Counts include steps omitted from the displayed trace.
+Source steps: 38; effect analysis evaluated: 29, partial: 3, unavailable: 6. Counts include steps omitted from the displayed trace.
 
-Collector observations for 28 source steps with known totals: observed: 182, emitted: 173, omitted: 9. Unavailable totals are excluded.
+Collector observations for 32 source steps with known totals: observed: 209, emitted: 197, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

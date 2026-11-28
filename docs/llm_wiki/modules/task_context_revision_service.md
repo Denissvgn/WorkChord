@@ -27,102 +27,29 @@ Relationship-backed execution context uses the same iteration-before-task lock o
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/commands.py"]
-    n1["backend/app/mcp_agent_tools.py"]
-    n2["backend/app/models/agent.py"]
-    n3["backend/app/models/task.py"]
-    n4["backend/app/services/external_link_service.py"]
-    n5["backend/app/services/github_status_service.py"]
-    n6["backend/app/services/github_webhook_service.py"]
-    n7["backend/app/services/request_source_service.py"]
-    n8["backend/app/services/snapshot_service.py"]
-    n9["backend/app/services/task_context_revision_service.py"]
-    n10["backend/app/services/task_service.py"]
-    n11["backend/tests/test_delivery_merge_prerequisites.py"]
-    n0 --> n3
-    n0 --> n8
-    n0 --> n10
+    n0["backend"]
+    n1["backend/app/services/task_context_revision_service.py"]
+    n0 --> n1
     n1 --> n0
-    n1 --> n2
-    n1 --> n4
-    n1 --> n7
-    n1 --> n9
-    n1 --> n10
-    n2 --> n3
-    n3 --> n2
-    n4 --> n0
-    n4 --> n3
-    n4 --> n9
-    n5 --> n0
-    n5 --> n2
-    n5 --> n4
-    n5 --> n9
-    n5 --> n10
-    n6 --> n0
-    n6 --> n2
-    n6 --> n5
-    n6 --> n9
-    n6 --> n10
-    n7 --> n0
-    n7 --> n3
-    n7 --> n9
-    n8 --> n0
-    n8 --> n2
-    n8 --> n3
-    n8 --> n10
-    n9 --> n0
-    n9 --> n2
-    n9 --> n3
-    n9 --> n8
-    n9 --> n10
-    n10 --> n0
-    n10 --> n2
-    n10 --> n3
-    n10 --> n4
-    n10 --> n8
-    n11 --> n0
-    n11 --> n2
-    n11 --> n3
-    n11 --> n4
-    n11 --> n5
-    n11 --> n6
-    n11 --> n7
-    n11 --> n9
-    click n0 "../modules/commands.md"
-    click n1 "../modules/mcp_agent_tools.md"
-    click n2 "../modules/models_agent.md"
-    click n3 "../modules/models_task.md"
-    click n4 "../modules/external_link_service.md"
-    click n5 "../modules/github_status_service.md"
-    click n6 "../modules/github_webhook_service.md"
-    click n7 "../modules/request_source_service.md"
-    click n8 "../modules/snapshot_service.md"
-    click n9 "../modules/task_context_revision_service.md"
-    click n10 "../modules/task_service.md"
-    click n11 "../modules/test_delivery_merge_prerequisites.md"
+    click n1 "../modules/task_context_revision_service.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
-| Inbound | [external_link_service](../modules/external_link_service.md) |
-| Inbound | [github_status_service](../modules/github_status_service.md) |
-| Inbound | [github_webhook_service](../modules/github_webhook_service.md) |
-| Inbound | [request_source_service](../modules/request_source_service.md) |
-| Inbound | [test_delivery_merge_prerequisites](../modules/test_delivery_merge_prerequisites.md) |
-| Outbound | [commands](../modules/commands.md) |
-| Outbound | [models_agent](../modules/models_agent.md) |
-| Outbound | [models_task](../modules/models_task.md) |
-| Outbound | [snapshot_service](../modules/snapshot_service.md) |
-| Outbound | [task_service](../modules/task_service.md) |
+| Inbound | `backend` (7) |
+| Outbound | `backend` (5) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 1 | 0 |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

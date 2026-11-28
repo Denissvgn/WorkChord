@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1957 | [Open section](#entities) |
-| Modules | 1240 | [Open section](#modules) |
+| Modules | 1242 | [Open section](#modules) |
 | Workflows | 254 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 654 | [Open section](#entry-point-flows) |
@@ -2017,6 +2017,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261127_0031_routing_qualification_keys](modules/20261127_0031_routing_qualification_keys.md) - Keep a deployment's declared qualification keys and let catalog entries hold them.
 - [20261127_0032_routing_calibration_contracts](modules/20261127_0032_routing_calibration_contracts.md) - Keep the deployment's calibration contracts and their append-only revisions.
 - [20261127_0033_project_routing_conflict_mode](modules/20261127_0033_project_routing_conflict_mode.md) - Let a project refuse or only warn about task routing that conflicts with its review policy.
+- [20261128_0034_reviewed_task_version](modules/20261128_0034_reviewed_task_version.md) - Keep the reviewed task revision alongside the revision produced by the verdict.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AccountMenu](modules/AccountMenu.md) - `frontend/src/features/identity/AccountMenu.tsx`
 - [AccountMenu.test](modules/AccountMenu.test.md) - `frontend/src/features/identity/AccountMenu.test.tsx`
@@ -2870,7 +2871,7 @@ Retained history; these declarations are absent from the selected source invento
 - [source](modules/source.md) - Read-only SQLite snapshot creation and source preflight.
 - [source_binding](modules/source_binding.md) - Independently bind local measurements to the source that actually executes.
 - [source_link_policy](modules/source_link_policy.md) - One policy for the source link carried by intakes and tasks.
-- [sql_semantics](modules/sql_semantics.md) - Cross-dialect text matching rules for the supported SQLite/PostgreSQL window.
+- [sql_semantics](modules/sql_semantics.md) - Cross-dialect SQL expressions for the supported SQLite/PostgreSQL window.
 - [src_main](modules/src_main.md) - `frontend/src/main.tsx`
 - [status](modules/status.md) - Deterministic DBM task/gate status amendment evaluation.
 - [statusScopes](modules/statusScopes.md) - `frontend/src/features/agentTeamSetup/statusScopes.ts`
@@ -3062,6 +3063,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_readiness_detail](modules/test_readiness_detail.md) - Managed readiness stays status-only unless the readiness-detail token matches.
 - [test_refusal_next_steps](modules/test_refusal_next_steps.md) - Every verification and review refusal names the legal next step, over REST, MCP and the task page.
 - [test_rehearsal_ownership](modules/test_rehearsal_ownership.md) - Isolation cannot adopt operator paths, names, architectures or unrelated resources.
+- [test_release_review_verdicts](modules/test_release_review_verdicts.md) - A release counts the current independent decisions on its linked work.
 - [test_replacement_carried_provenance](modules/test_replacement_carried_provenance.md) - A replacement's carried contributors stay out of independent review, and their history walk is bounded.
 - [test_review_provenance](modules/test_review_provenance.md) - Exercise independent publisher review through the atomic work commands.
 - [test_review_provenance_transports](modules/test_review_provenance_transports.md) - Exercise strict review, interruption and return through the registered worker and PM protocols.

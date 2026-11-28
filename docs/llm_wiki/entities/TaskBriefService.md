@@ -1,6 +1,6 @@
 # TaskBriefService
 
-**Location:** `backend/app/services/task_brief_service.py:203`
+**Location:** `backend/app/services/task_brief_service.py:208`
 **Kind:** Class
 **Bases:** —
 **Module:** [task_brief_service](../modules/task_brief_service.md)
@@ -28,7 +28,7 @@ _Auto-generated from `TaskBriefService` in `backend/app/services/task_brief_serv
 | `_locked` | *(async)* `(task_id, version)` | — | — |
 | `write_progress` | *(async)* `(task_id: int, data: ProgressWrite, *, fenced_submission = False)` | `@atomic_command` | — |
 | `require_review` | *(async)* `(task: Task, *, accepting: bool)` | — | One independence and evidence boundary for human and assigned-agent review. |
-| `record_review` | *(async)* `(task, *, verdict, reason, evidence = '')` | — | — |
+| `record_review` | *(async)* `(task, *, reviewed_task_version, verdict, reason, evidence = '')` | — | — |
 | `owner_accept` | *(async)* `(task_id: int, data: OwnerAcceptanceWrite)` | — | Accept one resolved task as an owner override of publisher independence. |
 | `_owner_accept` | *(async)* `(task_id, data, reason)` | `@atomic_command` | — |
 | `review` | *(async)* `(task_id: int, data: TaskReviewWrite)` | `@atomic_command` | — |
@@ -99,6 +99,6 @@ flowchart LR
 | `review_task` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `write_task_brief` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |
 | `AgentWorkService._terminal_work` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
-| `AgentWorkService.review` | call | [agent_work_service](../modules/agent_work_service.md) | 2 |
+| `AgentWorkService.review` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 
-> References: showing 12 of 40 logical references; 28 omitted by the 12-row generated summary limit.
+> References: showing 12 of 41 logical references; 29 omitted by the 12-row generated summary limit.
