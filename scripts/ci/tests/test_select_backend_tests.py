@@ -44,6 +44,29 @@ BASE_FILES = {
     "backend/tests/test_server_features.py": "",
     "docs/guide.md": "guide\n",
     "docs/other.md": "other\n",
+    # a nested conftest that imports a module its tests never import
+    "backend/app/services/dbhelper.py": "def helper():\n    return 1\n",
+    "backend/tests/database/__init__.py": "",
+    "backend/tests/database/conftest.py": "from app.services.dbhelper import helper\n",
+    "backend/tests/database/test_db.py": "def test_db():\n    pass\n",
+    # a script run by path, by bare name on sys.path and by python -m
+    "backend/app/services/delta.py": "def delta():\n    return 4\n",
+    "scripts/tools/run_thing.py": "from app.services.delta import delta\n",
+    "scripts/tools/peer.py": "def main():\n    pass\n",
+    "scripts/tools/bare_tool.py": "def run():\n    pass\n",
+    "backend/tests/test_tool.py": (
+        "import runpy\nfrom pathlib import Path\n"
+        "ROOT = Path(__file__).resolve().parents[2]\n"
+        "runpy.run_path(str(ROOT / 'scripts' / 'tools' / 'run_thing.py'))\n"
+    ),
+    "backend/tests/test_peer.py": "CMD = ['python', '-m', 'scripts.tools.peer']\n",
+    "backend/tests/test_bare.py": "import sys\nsys.path.insert(0, 'scripts/tools')\nimport bare_tool\n",
+    # a relative import two packages up
+    "backend/app/routers/v2/__init__.py": "",
+    "backend/app/routers/v2/items.py": "from ...services.alpha import alpha\n",
+    "backend/tests/test_items.py": "from app.routers.v2 import items\n",
+    # a test that imports another test module
+    "backend/tests/test_reuses_gamma.py": "from tests.test_gamma import gamma\n",
 }
 
 
@@ -123,6 +146,41 @@ class FallbackRuleTests(RepositoryCase):
     def test_unparseable_module_selects_full(self) -> None:
         self.assert_full({"backend/app/services/alpha.py": "def (:\n"}, "cannot parse")
 
+    def test_deleted_module_selects_full(self) -> None:
+        (self.root / "backend/app/services/gamma.py").unlink()
+        self.assert_full({}, "deleted or renamed")
+
+    def test_renamed_module_selects_full(self) -> None:
+        _git(self.root, "mv", "backend/app/services/gamma.py", "backend/app/services/gamma2.py")
+        self.assert_full({}, "deleted or renamed")
+
+    def test_test_support_helper_is_shared_ground(self) -> None:
+        self.assert_full({"backend/tests/support/database.py": "X = 1\n"}, "shared ground")
+
+    def test_agent_skill_sources_and_build_script_are_shared_ground(self) -> None:
+        for path in ("agent-skills/pm/SKILL.md", "scripts/build_agent_skills.py"):
+            with self.subTest(path=path):
+                self.assertTrue(selector.is_shared_ground(path))
+
+    def test_non_python_file_in_application_selects_full(self) -> None:
+        self.assert_full({"backend/app/autonomy/contracts/v1/schema.json": "{}"}, "application data")
+
+    def test_checkout_not_at_head_selects_full(self) -> None:
+        head = self.change({"docs/other.md": "changed\n"})
+        _git(self.root, "checkout", "-q", self.base)
+        result = selector.select(self.root, self.base, head, engine="ast")
+        self.assertEqual(result["mode"], "full", result)
+        self.assertIn("not the head commit", result["reasons"][-1])
+
+    def test_selection_covering_every_test_is_full(self) -> None:
+        # pytest imports every test module through the package backend/tests
+        self.assert_full({"backend/tests/__init__.py": "X = 1\n"}, "covers every backend test")
+
+    def test_full_mode_lists_only_existing_smoke_tests(self) -> None:
+        result = self.select(self.change({"backend/app/config.py": "X = 1\n"}), engine="ast")
+        self.assertEqual(result["mode"], "full")
+        self.assertEqual(result["smoke"], ["backend/tests/test_server_features.py"])
+
 
 class StaticSelectionTests(RepositoryCase):
     def test_reverse_imports_are_followed_transitively(self) -> None:
@@ -135,12 +193,12 @@ class StaticSelectionTests(RepositoryCase):
 
     def test_from_package_import_module_resolves_to_the_module(self) -> None:
         result = self.select(self.change({"backend/app/services/gamma.py": "def gamma():\n    return 4\n"}), engine="ast")
-        self.assertEqual(result["sources"]["ast"], ["backend/tests/test_gamma.py"])
+        self.assertEqual(result["sources"]["ast"], ["backend/tests/test_gamma.py", "backend/tests/test_reuses_gamma.py"])
 
     def test_changed_test_is_selected_with_smoke(self) -> None:
-        result = self.select(self.change({"backend/tests/test_gamma.py": "X = 2\n"}), engine="ast")
+        result = self.select(self.change({"backend/tests/test_docs.py": "X = 2\n"}), engine="ast")
         self.assertEqual(result["mode"], "selected")
-        self.assertEqual(result["tests"], ["backend/tests/test_gamma.py", "backend/tests/test_server_features.py"])
+        self.assertEqual(result["tests"], ["backend/tests/test_docs.py", "backend/tests/test_server_features.py"])
         self.assertEqual(result["smoke"], ["backend/tests/test_server_features.py"])
 
     def test_non_python_change_selects_tests_that_name_it(self) -> None:
@@ -151,6 +209,58 @@ class StaticSelectionTests(RepositoryCase):
         result = self.select(self.change({"docs/other.md": "new\n"}), engine="ast")
         self.assertEqual(result["mode"], "selected")
         self.assertEqual(result["tests"], ["backend/tests/test_server_features.py"])
+
+    def test_conftest_import_selects_the_tests_below_it(self) -> None:
+        result = self.select(self.change({"backend/app/services/dbhelper.py": "def helper():\n    return 2\n"}), engine="ast")
+        self.assertEqual(result["mode"], "selected", result)
+        self.assertEqual(result["sources"]["ast"], ["backend/tests/database/test_db.py"])
+
+    def test_script_run_by_path_traces_its_imports(self) -> None:
+        result = self.select(self.change({"backend/app/services/delta.py": "def delta():\n    return 5\n"}), engine="ast")
+        self.assertEqual(result["sources"]["ast"], ["backend/tests/test_tool.py"])
+
+    def test_changed_script_selects_tests_that_name_it(self) -> None:
+        cases = {
+            "scripts/tools/run_thing.py": "backend/tests/test_tool.py",
+            "scripts/tools/peer.py": "backend/tests/test_peer.py",
+            "scripts/tools/bare_tool.py": "backend/tests/test_bare.py",
+        }
+        for path, test in cases.items():
+            with self.subTest(path=path):
+                _git(self.root, "checkout", "-q", "--detach", self.base)
+                result = self.select(self.change({path: "X = 1\n"}), engine="ast")
+                self.assertEqual(result["sources"]["ast"], [test])
+
+    def test_relative_import_more_than_one_level_up(self) -> None:
+        result = self.select(self.change({"backend/app/services/alpha.py": "def alpha():\n    return 9\n"}), engine="ast")
+        self.assertIn("backend/tests/test_items.py", result["tests"])
+
+    def test_imported_names_resolve_relative_levels(self) -> None:
+        import ast
+        tree = ast.parse("from ...services.alpha import alpha\nfrom .. import sibling\n")
+        names = selector._imported_names(tree, "app.routers.v2.items", is_package=False)
+        self.assertIn("app.services.alpha", names)
+        self.assertIn("app.routers.sibling", names)
+        names = selector._imported_names(ast.parse("from .. import x\n"), "app.routers.v2", is_package=True)
+        self.assertIn("app.routers.x", names)
+
+    def test_test_importing_a_changed_test_is_selected(self) -> None:
+        result = self.select(self.change({"backend/tests/test_gamma.py": "from app.services import gamma\nX = 2\n"}), engine="ast")
+        self.assertIn("backend/tests/test_reuses_gamma.py", result["tests"])
+
+    def test_non_ascii_path_is_read(self) -> None:
+        result = self.select(self.change({"docs/gu\u00efde \u00fc.md": "x\n"}), engine="ast")
+        self.assertEqual(result["mode"], "selected", result)
+
+    def test_always_run_set_covers_contracts_and_source_scanners(self) -> None:
+        for path in (
+            "backend/tests/test_client_contract.py",
+            "backend/tests/test_mobile_contract.py",
+            "backend/tests/database/test_deployment_topology.py",
+            "backend/tests/test_refusal_next_steps.py",
+        ):
+            with self.subTest(path=path):
+                self.assertIn(path, selector.SMOKE_TESTS)
 
     def test_cli_prints_json(self) -> None:
         head = self.change({"docs/other.md": "new\n"})

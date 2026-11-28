@@ -9,32 +9,48 @@ object::
      "smoke": [...], "sources": {...}}
 
 ``tests`` are pytest paths under ``backend/tests`` and already include the
-``smoke`` set. ``mode: "full"`` means the caller must run the whole backend
-suite; ``tests`` is then empty. The script never fails a build: any doubt or
-error produces ``full``.
+always-run set (``smoke``). ``mode: "full"`` means the caller must run the
+whole backend suite; ``tests`` is then empty. The script never fails a build:
+any doubt or error produces ``full``.
+
+The graph is read from the working tree, so the checkout must be at
+``HEAD_SHA``; otherwise the result is ``full``.
 
 Selection, in order:
 
-1. Shared ground (any conftest, migrations, models, configuration, database
-   runtime, authority, commands, lockfiles, ``pyproject.toml``, ``.github`` and
-   this script) selects the full suite.
-2. Changed or added backend test files are selected directly.
-3. Changed Python modules are traced through reverse imports, transitively, to
-   the test files that import them. Two graphs are used and unioned: the
-   llm-wiki knowledge graph (``impact`` on the changed paths, then incoming
-   ``imports`` edges from the committed snapshot) and a static graph built from
-   the head checkout with Python's ``ast`` module.
-4. Changed non-Python files select the test files whose source mentions the
-   file name or its leading directories.
-5. The smoke set is always added.
+1. Shared ground selects the full suite: any conftest, test support helpers,
+   migrations, models, configuration, database runtime, authority, commands,
+   the agent skill sources and their build script, lockfiles,
+   ``pyproject.toml``, ``.github`` and this script.
+2. A deleted or renamed Python file, or a non-Python file under
+   ``backend/app`` or ``backend/tests``, selects the full suite.
+3. Changed or added backend test files are selected directly.
+4. Every changed path is traced, transitively, through a static graph of the
+   Python files under ``backend/app``, ``backend/tests`` and ``scripts``
+   built with Python's ``ast`` module. A file depends on another when it
 
-The wiki path falls back to ``full`` when the wiki snapshot revision is not an
-ancestor of (or equal to) the base, when llm-wiki is not importable, or when
-an impact or traversal result is truncated, ambiguous, unresolved, not
-``ready`` or reports ``found: false`` for a changed module.
+   * imports it (absolute, relative, or a bare name put on ``sys.path``),
+   * is a test file below a ``conftest.py`` or package ``__init__.py`` in
+     ``backend/tests`` (pytest loads those for every test under their
+     directory), or
+   * mentions it in its source: its repository path or a path suffix of at
+     least two components, its file name (with the parent directory name
+     when the file name is not unique in the repository) or its dotted
+     module name. This covers ``runpy.run_path``, ``importlib`` loading by
+     path, ``subprocess`` and ``python -m`` calls. A non-Python path also
+     matches files that mention one of its directories (two or more
+     components).
 
-``--engine ast`` skips llm-wiki and uses only the static graph; it exists to
-compare the two selectors.
+   Test files reached this way are selected.
+5. The always-run set is added. When the result covers every backend test,
+   the mode is ``full``.
+
+``--engine wiki`` also queries the llm-wiki knowledge graph (``impact`` on the
+changed backend modules, then incoming ``imports`` edges from the committed
+snapshot) and unions it with the static selection. It falls back to ``full``
+when the wiki snapshot revision is not an ancestor of (or equal to) the base,
+when llm-wiki is not importable, or when a result is truncated, ambiguous,
+unresolved, not ``ready`` or reports ``found: false`` for a changed module.
 """
 
 from __future__ import annotations
@@ -44,6 +60,7 @@ import ast
 import json
 import os
 from pathlib import Path, PurePosixPath
+import re
 import subprocess
 import sys
 from typing import Any, Callable, Iterable
@@ -69,14 +86,26 @@ SMOKE_TESTS: tuple[str, ...] = (
     "backend/tests/test_process_roles.py",
     "backend/tests/database/test_runtime_policy.py",
     "backend/tests/test_server_features.py",
+    # generated contracts: the client and mobile contracts are exported from
+    # the whole application (every router and schema), so any API change can
+    # alter them. Two files are far cheaper than the full suite that a rule
+    # on backend/app/routers or backend/app/schemas would trigger.
+    "backend/tests/test_client_contract.py",
+    "backend/tests/test_mobile_contract.py",
+    # source scanners: these read every Python file under backend/app (or the
+    # repository) instead of importing what they check
+    "backend/tests/database/test_deployment_topology.py",
+    "backend/tests/test_refusal_next_steps.py",
 )
 
 SHARED_PREFIXES: tuple[str, ...] = (
     ".github/",
+    "agent-skills/",
     "backend/app/migrations/",
     "backend/app/models/",
     "backend/app/config/",
     "backend/app/database_migration/",
+    "backend/tests/support/",
 )
 SHARED_FILES: frozenset[str] = frozenset(
     {
@@ -87,6 +116,7 @@ SHARED_FILES: frozenset[str] = frozenset(
         "backend/pyproject.toml",
         "backend/uv.lock",
         "pyproject.toml",
+        "scripts/build_agent_skills.py",
         "scripts/ci/select_backend_tests.py",
     }
 )
@@ -99,6 +129,13 @@ PYTHON_ROOTS: tuple[tuple[str, str], ...] = (
     ("backend/tests", "tests"),
     ("scripts", "scripts"),
 )
+ROOT_PACKAGES = frozenset(package for _, package in PYTHON_ROOTS)
+
+# File names that say nothing about which file is meant.
+GENERIC_NAMES = frozenset({"__init__.py", "__main__.py", "conftest.py"})
+
+# Path-like or dotted words in source text: quoted paths, dotted modules.
+_TOKEN = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.\-/]*")
 
 
 class FullSuite(Exception):
@@ -114,21 +151,48 @@ def _git(root: Path, *args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
+def _rev_parse(root: Path, revision: str) -> str:
+    result = _git(root, "rev-parse", "--verify", "--quiet", f"{revision}^{{commit}}")
+    return result.stdout.strip() if result.returncode == 0 else ""
+
+
+def require_checkout_at(root: Path, head: str) -> None:
+    """The graph is read from the working tree; it must be the head commit."""
+    expected = _rev_parse(root, head)
+    actual = _rev_parse(root, "HEAD")
+    if not expected or expected != actual:
+        raise FullSuite(
+            f"checkout is at {actual[:12] or 'unknown'}, not the head commit {head[:12]}"
+        )
+
+
 def changed_paths(root: Path, base: str, head: str) -> dict[str, str]:
     """Return ``{path: status}`` for the change from the merge base to head."""
     if not base or not head or base == ZERO_SHA:
         raise FullSuite("missing base or head commit")
-    result = _git(root, "diff", "--name-status", "--no-renames", f"{base}...{head}")
+    result = _git(root, "diff", "--name-status", "--no-renames", "-z", f"{base}...{head}")
     if result.returncode != 0:
         raise FullSuite(f"git diff failed: {result.stderr.strip()[:200]}")
+    fields = result.stdout.split("\0")
     paths: dict[str, str] = {}
-    for line in result.stdout.splitlines():
-        status, _, path = line.partition("\t")
-        if path:
-            paths[path] = status[:1]
+    index = 0
+    while index + 1 < len(fields):
+        status = fields[index]
+        if not status:
+            break
+        # Renames and copies are disabled above, so each entry has one path.
+        paths[fields[index + 1]] = status[:1]
+        index += 2
     if not paths:
         raise FullSuite("empty change")
     return paths
+
+
+def tracked_files(root: Path) -> list[str]:
+    result = _git(root, "ls-files", "-z")
+    if result.returncode != 0:
+        raise FullSuite(f"git ls-files failed: {result.stderr.strip()[:200]}")
+    return sorted(path for path in result.stdout.split("\0") if path)
 
 
 def is_ancestor(root: Path, ancestor: str, descendant: str) -> bool:
@@ -181,19 +245,6 @@ def module_name(path: str) -> str | None:
 # ---------------------------------------------------------------- static graph
 
 
-def python_files(root: Path) -> list[str]:
-    files: list[str] = []
-    for prefix, _ in PYTHON_ROOTS:
-        base = root / prefix
-        if base.is_dir():
-            files.extend(
-                path.relative_to(root).as_posix()
-                for path in base.rglob("*.py")
-                if "node_modules" not in path.parts
-            )
-    return sorted(files)
-
-
 def _imported_names(tree: ast.AST, own_module: str, is_package: bool) -> set[str]:
     names: set[str] = set()
     for node in ast.walk(tree):
@@ -204,7 +255,8 @@ def _imported_names(tree: ast.AST, own_module: str, is_package: bool) -> set[str
                 anchor = own_module.split(".")
                 if not is_package:
                     anchor = anchor[:-1]
-                anchor = anchor[: len(anchor) - (node.level - 1)] if node.level > 1 else anchor
+                if node.level > 1:
+                    anchor = anchor[: len(anchor) - (node.level - 1)]
                 base = ".".join([*anchor, *([node.module] if node.module else [])])
             else:
                 base = node.module or ""
@@ -214,28 +266,143 @@ def _imported_names(tree: ast.AST, own_module: str, is_package: bool) -> set[str
     return names
 
 
-def static_import_graph(root: Path, files: Iterable[str]) -> dict[str, set[str]]:
-    """Return ``{importer path: imported paths}`` for the given Python files."""
-    by_module = {name: path for path in files if (name := module_name(path))}
-    graph: dict[str, set[str]] = {}
-    for path in by_module.values():
-        try:
-            tree = ast.parse((root / path).read_text(encoding="utf-8"), filename=path)
-        except (OSError, SyntaxError, UnicodeDecodeError) as exc:
-            raise FullSuite(f"cannot parse {path}: {exc.__class__.__name__}") from exc
+def _tokens(text: str) -> set[str]:
+    """Return the path and dotted-name words of ``text`` and their parts.
+
+    ``"scripts/ci/x.py"`` yields every contiguous run of its components
+    (``scripts/ci``, ``ci/x.py``, ``x.py`` ...); ``app.cli.closeout`` yields
+    its dotted prefixes.
+    """
+    found: set[str] = set()
+    for raw in set(_TOKEN.findall(text)):
+        token = raw.rstrip("./-")
+        if not token:
+            continue
+        found.add(token)
+        if "/" in token:
+            parts = [part for part in token.split("/") if part]
+            for start in range(len(parts)):
+                for end in range(start + 1, len(parts) + 1):
+                    found.add("/".join(parts[start:end]))
+        elif "." in token:
+            parts = token.split(".")
+            for end in range(1, len(parts)):
+                found.add(".".join(parts[:end]))
+    return found
+
+
+class Repository:
+    """The Python files of the head checkout and how they depend on each other."""
+
+    def __init__(self, root: Path, files: Iterable[str] | None = None) -> None:
+        self.root = root
+        tracked = list(files) if files is not None else tracked_files(root)
+        self.python = sorted(path for path in tracked if module_name(path))
+        self.tests = {path for path in self.python if is_test_file(path)}
+        self.by_module = {module_name(path): path for path in self.python}
+        name_counts: dict[str, int] = {}
+        for path in tracked:
+            name = PurePosixPath(path).name
+            name_counts[name] = name_counts.get(name, 0) + 1
+        self.unique_names = {name for name, count in name_counts.items() if count == 1}
+        # Dotted suffixes, for bare imports of a directory put on sys.path
+        # (``import android_qualification`` for scripts/ci/...).
+        self.by_suffix: dict[str, set[str]] = {}
+        for module, path in self.by_module.items():
+            parts = module.split(".")
+            for start in range(1, len(parts)):
+                self.by_suffix.setdefault(".".join(parts[start:]), set()).add(path)
+
+        self.imports: dict[str, set[str]] = {}
+        self.token_index: dict[str, set[str]] = {}
+        for path in self.python:
+            try:
+                text = (root / path).read_text(encoding="utf-8")
+                tree = ast.parse(text, filename=path)
+            except (OSError, SyntaxError, UnicodeDecodeError, ValueError) as exc:
+                raise FullSuite(f"cannot parse {path}: {exc.__class__.__name__}") from exc
+            self.imports[path] = self._resolve(tree, path)
+            for token in _tokens(text):
+                self.token_index.setdefault(token, set()).add(path)
+
+        self.importers: dict[str, set[str]] = {}
+        for importer, targets in self.imports.items():
+            for target in targets:
+                self.importers.setdefault(target, set()).add(importer)
+        # pytest loads every conftest.py and package __init__.py above a
+        # test module before the module itself.
+        for implicit in self.python:
+            if implicit.startswith(f"{TEST_ROOT}/") and PurePosixPath(implicit).name in (
+                "conftest.py",
+                "__init__.py",
+            ):
+                directory = f"{PurePosixPath(implicit).parent}/"
+                self.importers.setdefault(implicit, set()).update(
+                    test for test in self.tests if test.startswith(directory)
+                )
+        self._mentions: dict[str, set[str]] = {}
+
+    def _resolve(self, tree: ast.AST, path: str) -> set[str]:
         own = module_name(path) or ""
         targets: set[str] = set()
         for name in _imported_names(tree, own, path.endswith("__init__.py")):
-            # Importing a.b.c also executes a and a.b; only record the deepest
-            # module that exists, plus the packages on the way.
             parts = name.split(".")
+            top = parts[0]
+            # Importing a.b.c also executes a and a.b: record every module on
+            # the way that exists.
             for length in range(len(parts), 0, -1):
-                target = by_module.get(".".join(parts[:length]))
+                prefix = ".".join(parts[:length])
+                target = self.by_module.get(prefix)
                 if target:
                     targets.add(target)
+                elif top not in ROOT_PACKAGES and top not in sys.stdlib_module_names:
+                    targets.update(self.by_suffix.get(prefix, ()))
         targets.discard(path)
-        graph[path] = targets
-    return graph
+        return targets
+
+    def needles(self, path: str) -> list[tuple[str, ...]]:
+        """Return word groups; a file mentions ``path`` when it has all of a group."""
+        pure = PurePosixPath(path)
+        parts = pure.parts
+        groups: list[tuple[str, ...]] = [
+            ("/".join(parts[start:]),) for start in range(len(parts) - 1)
+        ]
+        if pure.name not in GENERIC_NAMES:
+            if pure.name in self.unique_names:
+                groups.append((pure.name,))
+            elif len(parts) >= 2:
+                groups.append((pure.name, parts[-2]))
+        module = module_name(path)
+        if module and "." in module:
+            groups.append((module,))
+        if not module:
+            groups.extend(("/".join(parts[:end]),) for end in range(2, len(parts)))
+        return groups
+
+    def mentioning(self, path: str) -> set[str]:
+        """Return the Python files whose source mentions ``path``."""
+        cached = self._mentions.get(path)
+        if cached is not None:
+            return cached
+        found: set[str] = set()
+        for group in self.needles(path):
+            sets = [self.token_index.get(token, set()) for token in group]
+            found |= set.intersection(*sets) if sets else set()
+        found.discard(path)
+        self._mentions[path] = found
+        return found
+
+    def dependents(self, path: str) -> set[str]:
+        return self.importers.get(path, set()) | self.mentioning(path)
+
+    def affected(self, paths: Iterable[str]) -> set[str]:
+        """Return every Python file that depends, transitively, on a path."""
+        start: set[str] = set()
+        for path in paths:
+            if path in self.imports:
+                start.add(path)
+            start |= self.mentioning(path)
+        return start | reverse_closure(start, self.dependents)
 
 
 def reverse_closure(start: Iterable[str], incoming: Callable[[str], Iterable[str]]) -> set[str]:
@@ -249,35 +416,6 @@ def reverse_closure(start: Iterable[str], incoming: Callable[[str], Iterable[str
                 seen.add(importer)
                 stack.append(importer)
     return seen
-
-
-def static_selection(root: Path, modules: Iterable[str]) -> set[str]:
-    graph = static_import_graph(root, python_files(root))
-    reverse: dict[str, set[str]] = {}
-    for importer, targets in graph.items():
-        for target in targets:
-            reverse.setdefault(target, set()).add(importer)
-    affected = reverse_closure(modules, lambda path: reverse.get(path, ()))
-    return {path for path in affected if is_test_file(path)}
-
-
-def reference_selection(root: Path, paths: Iterable[str]) -> set[str]:
-    """Select test files whose text names a changed non-Python file."""
-    needles: set[str] = set()
-    for path in paths:
-        pure = PurePosixPath(path)
-        if len(pure.name) >= 6:
-            needles.add(pure.name)
-        if len(pure.parts) >= 3:
-            needles.add("/".join(pure.parts[:2]))
-    if not needles:
-        return set()
-    selected: set[str] = set()
-    for test in (root / TEST_ROOT).rglob("test_*.py"):
-        text = test.read_text(encoding="utf-8", errors="replace")
-        if any(needle in text for needle in needles):
-            selected.add(test.relative_to(root).as_posix())
-    return selected
 
 
 # ------------------------------------------------------------------ wiki graph
@@ -344,19 +482,15 @@ class WikiGraph:
             self._service = self.api.build_snapshot_documentation_query_service(
                 wiki_root=(self.root / WIKI_DIR).resolve(), limit=1000
             )
-        traverse = type(self._service).traverse_typed_graph
-        # The public result is capped at 64 KiB (about ten edges); the
-        # undecorated traversal applies the same filters and the row limit
-        # without that byte ceiling.
-        traverse = getattr(traverse, "__wrapped__", traverse)
-        return traverse(
-            self._service,
+        # A result over the public size ceiling comes back truncated, which
+        # selects the full suite.
+        return self.api.traverse_typed_graph(
             locator,
             direction="incoming",
             kinds=["imports"],
-            origins=None,
-            resolutions=None,
             include_evidence=False,
+            service=self._service,
+            limit=1000,
         )
 
 
@@ -379,7 +513,7 @@ def wiki_selection(
         raise FullSuite(f"wiki snapshot {revision[:12]} is not an ancestor of the base")
     graph = graph or WikiGraph(root)
     # One impact query per path: a combined result for a few large modules
-    # exceeds the 64 KiB result ceiling and comes back empty and truncated.
+    # exceeds the result ceiling and comes back empty and truncated.
     locators: dict[str, str] = {}
     for path, impact in graph.impact_each(modules):
         _require_clean(impact, f"impact of {path}")
@@ -393,7 +527,6 @@ def wiki_selection(
         raise FullSuite(f"impact found no module concept for {missing[0]}")
 
     path_to_locator: dict[str, str] = dict(locators)
-    locator_to_path = {locator: path for path, locator in locators.items()}
     importers_cache: dict[str, set[str]] = {}
 
     def incoming(path: str) -> set[str]:
@@ -416,7 +549,6 @@ def wiki_selection(
                 raise FullSuite(f"import edge without a source for {path}")
             if related.get("locator"):
                 path_to_locator.setdefault(source, related["locator"])
-                locator_to_path.setdefault(related["locator"], source)
             importers.add(source)
         importers_cache[locator] = importers
         return importers
@@ -428,48 +560,63 @@ def wiki_selection(
 # ------------------------------------------------------------------- selection
 
 
+def selection_for(repository: Repository, changes: dict[str, str]) -> tuple[set[str], dict[str, list[str]]]:
+    """Return the tests a change selects (always-run set excluded) and why.
+
+    Raises ``FullSuite`` when the change needs the whole suite.
+    """
+    shared = sorted(path for path in changes if is_shared_ground(path))
+    if shared:
+        raise FullSuite(f"shared ground changed: {', '.join(shared[:5])}")
+    removed = sorted(
+        path for path, status in changes.items() if status in "DRC" and path.endswith(".py")
+    )
+    if removed:
+        raise FullSuite(f"Python file deleted or renamed: {removed[0]}")
+    for prefix, what in ((f"{TEST_ROOT}/", "test data"), ("backend/app/", "application data")):
+        data = sorted(
+            path for path in changes if path.startswith(prefix) and not path.endswith(".py")
+        )
+        if data:
+            raise FullSuite(f"{what} changed: {data[0]}")
+
+    present = [path for path, status in changes.items() if status != "D"]
+    direct = {path for path in present if is_test_file(path)}
+    python = [path for path in present if module_name(path)]
+    other = [path for path in present if not module_name(path)]
+    graph = {path for path in repository.affected(python) if is_test_file(path)}
+    referenced = {path for path in repository.affected(other) if is_test_file(path)}
+    sources = {
+        "changed_tests": sorted(direct),
+        "ast": sorted(graph),
+        "references": sorted(referenced),
+    }
+    return direct | graph | referenced, sources
+
+
 def select(
     root: Path,
     base: str,
     head: str,
     *,
-    engine: str = "wiki",
+    engine: str = "ast",
     wiki_graph: WikiGraph | None = None,
 ) -> dict[str, Any]:
     reasons: list[str] = []
     sources: dict[str, list[str]] = {}
+    smoke = [path for path in SMOKE_TESTS if (root / path).exists()]
     try:
         changes = changed_paths(root, base, head)
-        shared = sorted(path for path in changes if is_shared_ground(path))
-        if shared:
-            raise FullSuite(f"shared ground changed: {', '.join(shared[:5])}")
-        tests_dir_other = sorted(
+        require_checkout_at(root, head)
+        repository = Repository(root)
+        selected, sources = selection_for(repository, changes)
+
+        backend_modules = sorted(
             path
-            for path in changes
-            if path.startswith(f"{TEST_ROOT}/")
+            for path, status in changes.items()
+            if status != "D" and path.startswith("backend/") and module_name(path)
             and not is_test_file(path)
-            and PurePosixPath(path).suffix != ".py"
         )
-        if tests_dir_other:
-            raise FullSuite(f"test data changed: {tests_dir_other[0]}")
-
-        present = {path for path, status in changes.items() if status != "D"}
-        direct = {path for path in present if is_test_file(path)}
-        sources["changed_tests"] = sorted(direct)
-        modules = sorted(
-            path
-            for path in changes
-            if module_name(path) and not is_test_file(path) and path not in direct
-        )
-        other = sorted(path for path in changes if not module_name(path))
-
-        static = static_selection(root, modules) if modules else set()
-        sources["ast"] = sorted(static)
-        referenced = reference_selection(root, other) if other else set()
-        sources["references"] = sorted(referenced)
-        selected = direct | static | referenced
-
-        backend_modules = [path for path in modules if path.startswith("backend/")]
         if engine == "wiki" and backend_modules:
             wiki = wiki_selection(root, base, backend_modules, wiki_graph)
             sources["wiki"] = sorted(wiki)
@@ -477,11 +624,11 @@ def select(
         elif engine == "wiki":
             reasons.append("no changed backend modules; llm-wiki not consulted")
         reasons.append(
-            f"{len(changes)} changed paths, {len(modules)} Python modules, "
-            f"{len(direct)} changed tests"
+            f"{len(changes)} changed paths, {len(sources['changed_tests'])} changed tests"
         )
-        smoke = [path for path in SMOKE_TESTS if (root / path).exists()]
-        tests = sorted((selected & existing_tests(root)) | set(smoke))
+        tests = sorted((selected & repository.tests) | set(smoke))
+        if set(tests) >= repository.tests:
+            raise FullSuite("selection covers every backend test")
         return {
             "mode": "selected",
             "reasons": reasons,
@@ -493,11 +640,7 @@ def select(
         reasons.append(str(exc))
     except Exception as exc:  # noqa: BLE001 - fail toward the full suite
         reasons.append(f"selector error: {exc.__class__.__name__}: {str(exc)[:200]}")
-    return {"mode": "full", "reasons": reasons, "tests": [], "smoke": list(SMOKE_TESTS), "sources": sources}
-
-
-def existing_tests(root: Path) -> set[str]:
-    return {path.relative_to(root).as_posix() for path in (root / TEST_ROOT).rglob("test_*.py")}
+    return {"mode": "full", "reasons": reasons, "tests": [], "smoke": smoke, "sources": sources}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -505,7 +648,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--base", default=os.environ.get("BASE_SHA", ""))
     parser.add_argument("--head", default=os.environ.get("HEAD_SHA", ""))
     parser.add_argument("--root", type=Path, default=REPOSITORY_ROOT)
-    parser.add_argument("--engine", choices=("wiki", "ast"), default="wiki")
+    parser.add_argument(
+        "--engine",
+        choices=("ast", "wiki"),
+        default="ast",
+        help="ast: static graph only (default); wiki: static graph unioned with llm-wiki",
+    )
     args = parser.parse_args(argv)
     print(json.dumps(select(args.root, args.base, args.head, engine=args.engine), indent=2))
     return 0
